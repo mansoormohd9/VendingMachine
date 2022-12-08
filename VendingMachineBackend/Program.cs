@@ -46,7 +46,17 @@ builder.Services.AddSwaggerGen(options => {
     });
 });
 
+//Add session management
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 //services and repositories
+builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
@@ -59,6 +69,7 @@ var app = builder.Build();
 builder.Services.AddAuthentication(opt => {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -66,6 +77,7 @@ builder.Services.AddAuthentication(opt => {
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        RequireExpirationTime = true,
         ValidIssuer = app.Configuration.GetValue<string>("JWT:ValidIssuer"),
         ValidAudience = app.Configuration.GetValue<string>("JWT:ValidAudience"),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration.GetValue<string>("JWT:Secret")))
@@ -82,6 +94,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllers();
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using VendingMachineBackend.Models;
+using VendingMachineBackend.Dtos;
+using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
 {
@@ -11,41 +10,48 @@ namespace VendingMachineBackend.Controllers
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private UserManager<User> userManager;
-        private SignInManager<User> signInManager;
+        private readonly IAccountService _accountService;
 
-        public AccountController(UserManager<User> userMgr, SignInManager<User> signinMgr)
+        public AccountController(IAccountService accountService)
         {
-            userManager = userMgr;
-            signInManager = signinMgr;
+            _accountService = accountService;
         }
 
-        [AllowAnonymous]
-        public IActionResult Login(string returnUrl)
-        {
-            Login login = new Login();
-            login.ReturnUrl = returnUrl;
-            return View(login);
-        }
-
-        [HttpPost]
+        [HttpPost("login")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Login login)
+        public async Task<IActionResult> Login([FromBody]LoginDto login)
         {
-            if (ModelState.IsValid)
+            var loginResult = await _accountService.Login(login);
+
+            if(!loginResult.result.Success)
             {
-                User User = await userManager.FindByEmailAsync(login.Email);
-                if (User != null)
-                {
-                    await signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(User, login.Password, false, false);
-                    if (result.Succeeded)
-                        return Redirect(login.ReturnUrl ?? "/");
-                }
-                ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");
+                return BadRequest(loginResult.result.Message);
             }
-            return View(login);
+
+            return Ok(loginResult.token);
+        }
+
+        [HttpPost("signup")]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUp([FromBody] SingUpDto singUpDto)
+        {
+            var signUpResult = await _accountService.SignUp(singUpDto);
+
+            if (!signUpResult.result.Success)
+            {
+                return BadRequest(signUpResult.result.Message);
+            }
+
+            return Ok(signUpResult.token);
+        }
+
+        [HttpGet("logOut")]
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return Ok();
         }
     }
 }
