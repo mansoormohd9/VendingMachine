@@ -6,9 +6,9 @@ namespace VendingMachineBackend.Repositories
     {
         Task<TEntity> GetAsync(int id);
         IEnumerable<TEntity> GetAll();
-        IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity?> Find(Expression<Func<TEntity, bool>> predicate);
 
-        TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
+        TEntity? SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
 
         Task AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);

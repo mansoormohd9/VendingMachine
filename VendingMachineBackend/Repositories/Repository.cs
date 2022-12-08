@@ -34,7 +34,7 @@ namespace VendingMachineBackend.Repositories
             return _dbContext.Set<TEntity>().ToList();
         }
 
-        public async Task<TEntity> GetAsync(int id)
+        public async Task<TEntity?> GetAsync(int id)
         {
             return await _dbContext.Set<TEntity>().FindAsync(id);
         }
@@ -50,7 +50,7 @@ namespace VendingMachineBackend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        public TEntity? SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
             return _dbContext.Set<TEntity>().SingleOrDefault(predicate);
         }
