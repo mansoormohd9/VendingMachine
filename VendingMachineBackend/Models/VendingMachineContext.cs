@@ -11,14 +11,7 @@ namespace VendingMachineBackend.Models
         {
         }
 
-        public DbSet<IdentityUser> Users { get; set; } = null!;
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            SeedData.SeedUsers(builder);
-            SeedData.SeedRoles(builder);
-            SeedData.SeedUserRoles(builder);
-        }
+        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<Deposit> Deposits { get; set; } = null!;
     }
 }

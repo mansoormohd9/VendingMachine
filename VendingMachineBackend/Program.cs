@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using VendingMachineBackend.Models;
 using VendingMachineBackend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<VendingMachineContext>(opt =>
+    opt.UseInMemoryDatabase("VendingMachine"));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

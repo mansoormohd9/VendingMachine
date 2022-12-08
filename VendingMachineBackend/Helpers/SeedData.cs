@@ -13,10 +13,9 @@ namespace VendingMachineBackend.Helpers
 
         public static void SeedUsers(ModelBuilder builder)
         {
-            IdentityUser user = new IdentityUser()
+            IdentityUser user = new IdentityUser(userName: "Admin")
             {
                 Id = AdminUserId,
-                UserName = "Admin",
                 Email = "admin@test.com",
                 LockoutEnabled = false,
                 PhoneNumber = "1234567890"
