@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VendingMachineBackend.Helpers
 {
+    //NOTES: TEMPORARY DATA FOR TESTING
     public static class SeedData
     {
         private static string AdminUserId = "75a9f6c2-b188-4d7f-b752-9c72fe5e44e7";
