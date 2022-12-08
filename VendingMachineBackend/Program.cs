@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VendingMachineBackend.Models;
 using VendingMachineBackend.Repositories;
+using VendingMachineBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,9 @@ builder.Services.AddDbContext<VendingMachineContext>(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//services
+//services and repositories
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IDepositRepository, DepositRepository>();
 
