@@ -1,3 +1,5 @@
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+
 namespace VendingMachineBackendTests
 {
     [TestClass]
