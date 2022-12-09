@@ -14,6 +14,7 @@ namespace VendingMachineBackendIntegrationTests
     public class UserControllerTests: BaseTestSetup
     {
         private readonly string apiBase = "api/users/";
+
         [TestInitialize]
         public async Task TestInitialize()
         {
@@ -43,8 +44,8 @@ namespace VendingMachineBackendIntegrationTests
             {
                 FirstName = "First",
                 LastName = "Last",
-                Email = "test@test.com",
-                Role = "Buyer"
+                Email = "ADMIN@TEST.COM",
+                Roles = new List<string> { "Buyer" }
             };
 
             //act
@@ -63,7 +64,7 @@ namespace VendingMachineBackendIntegrationTests
                 FirstName = "First",
                 LastName = "Last",
                 Email = "test1@test.com",
-                Role = "Buyer"
+                Roles = new List<string> { "Buyer" }
             };
 
             //act
@@ -84,7 +85,7 @@ namespace VendingMachineBackendIntegrationTests
                 FirstName = "First",
                 LastName = "Last",
                 Email = "test1@test.com",
-                Role = "Buyer"
+                Roles = new List<string> { "Buyer" }
             };
 
             //act
@@ -107,7 +108,7 @@ namespace VendingMachineBackendIntegrationTests
                 FirstName = "First",
                 LastName = "Last",
                 Email = "test1@test.com",
-                Role = "Buyer"
+                Roles = new List<string> { "Buyer" }
             };
 
             //act

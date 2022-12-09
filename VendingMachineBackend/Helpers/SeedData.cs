@@ -11,20 +11,21 @@ namespace VendingMachineBackend.Helpers
         private static string AdminRoleId = "83d8c9d4-610c-40c7-b26c-d0f23d708ee6";
         private static string SellerRoleId = "973c8158-4ca1-48e1-a1c9-5fcd4630cc41";
         private static string BuyerRoleId = "20b54706-1be9-473d-8a83-2cf57418e2c6";
+        private static string AdminEmail = "ADMIN@TEST.COM";
 
         public static void SeedUsers(ModelBuilder builder)
         {
             var user = new User()
             {
                 Id = AdminUserId,
-                UserName = "Admin",
-                Email = "admin@test.com",
-                LockoutEnabled = false,
-                PhoneNumber = "1234567890"
+                UserName = AdminEmail,
+                NormalizedUserName = AdminEmail,
+                Email = AdminEmail,
+                NormalizedEmail = AdminEmail,
+                EmailConfirmed = true,
             };
-
             PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-            passwordHasher.HashPassword(user, "Admin*123");
+            user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
 
             builder.Entity<User>().HasData(user);
         }

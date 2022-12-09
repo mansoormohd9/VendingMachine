@@ -18,10 +18,10 @@ namespace VendingMachineBackendIntegrationTests
         {
             var loginDto = new LoginDto
             {
-                Email = signUpDto.Email,
-                Password = signUpDto.Password,
+                Email = "admin@test.com",
+                Password = "Admin@123",
             };
-            await httpClient.PostAsync("api/account/signup", new StringContent(JsonConvert.SerializeObject(signUpDto), Encoding.UTF8, MediaTypeNames.Application.Json));
+            //await httpClient.PostAsync("api/account/signup", new StringContent(JsonConvert.SerializeObject(signUpDto), Encoding.UTF8, MediaTypeNames.Application.Json));
 
             var response = await httpClient.PostAsync("api/account/login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, MediaTypeNames.Application.Json));
             var jwtToken = await response.Content.ReadAsStringAsync();

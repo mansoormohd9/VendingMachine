@@ -21,7 +21,7 @@ namespace VendingMachineBackendIntegrationTests
             {
                 FirstName = "First",
                 LastName = "Last",
-                Email = "test@test.com",
+                Email = "test1@test.com",
                 Password = "Test@123",
                 Role = "Buyer"
             };

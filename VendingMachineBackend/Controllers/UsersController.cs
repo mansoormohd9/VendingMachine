@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VendingMachineBackend.Dtos;
-using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "BUYER")]
+    [Authorize(Roles = "ADMIN")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
