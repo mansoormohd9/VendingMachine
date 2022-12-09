@@ -123,8 +123,5 @@ app.UseSession();
 
 app.MapControllers();
 
-//Seed data for testing
-//await SeedData.Initialize(app.Services);
-
 app.Run();
 public partial class Program { }
