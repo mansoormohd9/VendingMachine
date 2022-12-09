@@ -35,8 +35,8 @@ namespace VendingMachineBackend.Services
             {
                 return new Result<string>(false, "Password doesn't match");
             }
-
-            var token = _jwtService.GenerateJwtToken();
+            var roles = (await _userManager.GetRolesAsync(user)) ?? new List<string>();
+            var token = _jwtService.GenerateJwtToken(roles);
 
             _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(user));
 
@@ -54,12 +54,14 @@ namespace VendingMachineBackend.Services
 
             var newUser = _mapper.Map<User>(singUpDto);
             var result = await _userManager.CreateAsync(newUser, singUpDto.Password);
+            await _userManager.AddToRoleAsync(newUser, singUpDto.Role);
             if (!result.Succeeded)
             {
                 return new Result<string>(false, string.Join(',', result.Errors, string.Empty));
             }
 
-            var token = _jwtService.GenerateJwtToken();
+            var roles = (await _userManager.GetRolesAsync(newUser)) ?? new List<string>();
+            var token = _jwtService.GenerateJwtToken(roles);
 
             _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(user));
 

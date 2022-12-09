@@ -8,7 +8,7 @@ namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "BUYER")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;

@@ -13,14 +13,15 @@ namespace VendingMachineBackend.Services
             _configuration = configuration;
         }
 
-        public string GenerateJwtToken()
+        public string GenerateJwtToken(IList<string> roles)
         {
+            var claims = roles.Select(x => new Claim(ClaimTypes.Role, x));
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:Secret")));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var tokeOptions = new JwtSecurityToken(
                 issuer: _configuration.GetValue<string>("JWT:ValidIssuer"),
                 audience: _configuration.GetValue<string>("JWT:ValidAudience"),
-                claims: new List<Claim>(),
+                claims: claims,
                 expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: signinCredentials
             );

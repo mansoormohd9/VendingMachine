@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Models;
 using VendingMachineBackend.Repositories;
 using VendingMachineBackend.Services;
@@ -15,7 +16,8 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<VendingMachineContext>(opt =>
-    opt.UseInMemoryDatabase("VendingMachine"));
+    opt.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionString"), providerOptions => providerOptions.EnableRetryOnFailure()));
+    //opt.UseInMemoryDatabase("VendingMachine"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -120,6 +122,9 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapControllers();
+
+//Seed data for testing
+//await SeedData.Initialize(app.Services);
 
 app.Run();
 public partial class Program { }

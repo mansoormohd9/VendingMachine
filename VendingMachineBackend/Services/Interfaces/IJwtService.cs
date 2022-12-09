@@ -2,6 +2,6 @@
 {
     public interface IJwtService
     {
-        string GenerateJwtToken();
+        string GenerateJwtToken(IList<string> roles);
     }
 }

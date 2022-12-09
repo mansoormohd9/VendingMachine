@@ -28,7 +28,8 @@ namespace VendingMachineBackend.Services
 
         public IEnumerable<UserDto> GetAll()
         {
-            return _userRepository.GetAll().ToList().Select(x => _mapper.Map<UserDto>(x));
+            var test = _userRepository.GetAll().ToList();
+            return _userRepository.GetAll().Select(x => _mapper.Map<UserDto>(x));
         }
 
         public async Task<Result<string>> AddAsync(UserDto userDto)
