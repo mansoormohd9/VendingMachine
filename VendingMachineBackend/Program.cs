@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,7 +9,8 @@ using VendingMachineBackend.Repositories;
 using VendingMachineBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -18,12 +20,17 @@ builder.Services.AddDbContext<VendingMachineContext>(opt =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
-    options.SwaggerDoc("V1", new OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "V1",
-        Title = "WebAPI",
-        Description = "VendingMachine WebAPI"
+        Title = "VendingMachine API",
+        Version = "v1",
+        Description = "VendingMachine API Services.",
+        Contact = new OpenApiContact
+        {
+            Name = "Vending Support"
+        },
     });
+    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Scheme = "Bearer",
@@ -31,21 +38,33 @@ builder.Services.AddSwaggerGen(options => {
         In = ParameterLocation.Header,
         Name = "Authorization",
         Description = "Bearer Authentication with JWT Token",
-        Type = SecuritySchemeType.Http
+        Type = SecuritySchemeType.ApiKey
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
             new OpenApiSecurityScheme {
                 Reference = new OpenApiReference {
                     Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
+                    Type = ReferenceType.SecurityScheme
                 }
             },
-            new List < string > ()
+            new string[]{ }
         }
     });
 });
 
+builder.Services.AddIdentity<User, IdentityRole>(o =>
+{
+    o.Password.RequireDigit = true;
+    o.Password.RequireLowercase = true;
+    o.Password.RequireUppercase = true;
+    o.Password.RequireNonAlphanumeric = true;
+    o.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<VendingMachineContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.AddDistributedMemoryCache();
 //Add session management
 builder.Services.AddSession(options =>
 {
@@ -54,22 +73,20 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddHttpContextAccessor();
+
 //services and repositories
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IDepositService, DepositService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IDepositRepository, DepositRepository>();
-
-var app = builder.Build();
-
-
 
 builder.Services.AddAuthentication(opt => {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -77,12 +94,15 @@ builder.Services.AddAuthentication(opt => {
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        RequireExpirationTime = true,
-        ValidIssuer = app.Configuration.GetValue<string>("JWT:ValidIssuer"),
-        ValidAudience = app.Configuration.GetValue<string>("JWT:ValidAudience"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration.GetValue<string>("JWT:Secret")))
+        RequireExpirationTime = true,        
+        ValidIssuer = builder.Configuration.GetValue<string>("JWT:ValidIssuer"),
+        ValidAudience = builder.Configuration.GetValue<string>("JWT:ValidAudience"),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:Secret")))
     };
+    options.IncludeErrorDetails = true;
 });
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -92,7 +112,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 

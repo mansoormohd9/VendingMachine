@@ -12,6 +12,6 @@ namespace VendingMachineBackend.Models
         [Required]
         public Guid UserId { get; set; }
 
-        public IdentityUser User { get; set; }
+        public virtual User User { get; set; }
     }
 }

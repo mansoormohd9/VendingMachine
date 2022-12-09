@@ -19,7 +19,6 @@ namespace VendingMachineBackend.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody]LoginDto login)
         {
             var loginResult = await _accountService.Login(login);
@@ -29,12 +28,12 @@ namespace VendingMachineBackend.Controllers
                 return BadRequest(loginResult.result.Message);
             }
 
+            SetJWTCookie(loginResult.token);
             return Ok(loginResult.token);
         }
 
         [HttpPost("signup")]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp([FromBody] SingUpDto singUpDto)
         {
             var signUpResult = await _accountService.SignUp(singUpDto);
@@ -44,6 +43,7 @@ namespace VendingMachineBackend.Controllers
                 return BadRequest(signUpResult.result.Message);
             }
 
+            SetJWTCookie(signUpResult.token);
             return Ok(signUpResult.token);
         }
 
@@ -52,6 +52,16 @@ namespace VendingMachineBackend.Controllers
         {
             HttpContext.Session.Clear();
             return Ok();
+        }
+
+        private void SetJWTCookie(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddHours(3),
+            };
+            Response.Cookies.Append("jwtCookie", token, cookieOptions);
         }
     }
 }

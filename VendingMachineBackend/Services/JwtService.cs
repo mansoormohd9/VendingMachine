@@ -27,5 +27,14 @@ namespace VendingMachineBackend.Services
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
             return tokenString;
         }
+
+        public CookieOptions SetJWTCookie(string token)
+        {
+            return new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddHours(3),
+            };
+        }
     }
 }

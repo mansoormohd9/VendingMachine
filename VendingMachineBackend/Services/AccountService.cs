@@ -52,7 +52,9 @@ namespace VendingMachineBackend.Services
             var newUser = new User
             {
                 UserName = singUpDto.Email,
-                Email = singUpDto.Email
+                Email = singUpDto.Email,
+                FirstName  = singUpDto.FirstName,
+                LastName = singUpDto.LastName
             };
             var result = await _userManager.CreateAsync(newUser, singUpDto.Password);
             if (!result.Succeeded)
