@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Models;
 using VendingMachineBackend.Repositories;
@@ -8,11 +10,13 @@ namespace VendingMachineBackend.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public Result<UserDto> GetUserById(string userId)
@@ -42,6 +46,7 @@ namespace VendingMachineBackend.Services
 
             var user = _mapper.Map<User>(userDto);
             await _userRepository.AddAsync(user);
+            await UpSertRoles(user, userDto.Roles);
             return new Result<string>(true, string.Empty, user.Id);
         }
 
@@ -55,6 +60,7 @@ namespace VendingMachineBackend.Services
 
             var user = _mapper.Map<User>(userDto);
             await _userRepository.UpdateAsync(user);
+            await UpSertRoles(user, userDto.Roles);
             return new Result<string>(true, string.Empty);
         }
 
@@ -65,9 +71,19 @@ namespace VendingMachineBackend.Services
             {
                 return new Result<string>(false, "User doesn't exists");
             }
-
+            await UpSertRoles(user, new List<string>());
             await _userRepository.RemoveAsync(user);
             return new Result<string>(true, string.Empty);
+        }
+
+        private async Task UpSertRoles(User user, IList<string> roles)
+        {
+            var exitingRoles = await _userManager.GetRolesAsync(user);
+            var deletedRoles = exitingRoles.Except(roles);
+            var newRoles = roles.Except(deletedRoles);
+
+            await _userManager.RemoveFromRolesAsync(user, deletedRoles);
+            await _userManager.AddToRolesAsync(user, newRoles);
         }
     }
 }

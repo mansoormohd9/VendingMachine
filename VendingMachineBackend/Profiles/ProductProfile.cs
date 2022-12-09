@@ -2,7 +2,7 @@
 using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Models;
-using static VendingMachineBackend.CustomResolvers;
+using static VendingMachineBackend.Profiles.CustomResolvers;
 
 namespace VendingMachineBackend.Profiles
 {
