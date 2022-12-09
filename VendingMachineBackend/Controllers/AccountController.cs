@@ -23,13 +23,12 @@ namespace VendingMachineBackend.Controllers
         {
             var loginResult = await _accountService.Login(login);
 
-            if(!loginResult.result.Success)
+            if(!loginResult.Success)
             {
-                return BadRequest(loginResult.result.Message);
+                return BadRequest(loginResult.Message);
             }
 
-            SetJWTCookie(loginResult.token);
-            return Ok(loginResult.token);
+            return Ok(loginResult.Value);
         }
 
         [HttpPost("signup")]
@@ -38,13 +37,12 @@ namespace VendingMachineBackend.Controllers
         {
             var signUpResult = await _accountService.SignUp(singUpDto);
 
-            if (!signUpResult.result.Success)
+            if (!signUpResult.Success)
             {
-                return BadRequest(signUpResult.result.Message);
+                return BadRequest(signUpResult.Message);
             }
 
-            SetJWTCookie(signUpResult.token);
-            return Ok(signUpResult.token);
+            return Ok(signUpResult.Value);
         }
 
         [HttpGet("logOut")]
@@ -52,16 +50,6 @@ namespace VendingMachineBackend.Controllers
         {
             HttpContext.Session.Clear();
             return Ok();
-        }
-
-        private void SetJWTCookie(string token)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddHours(3),
-            };
-            Response.Cookies.Append("jwtCookie", token, cookieOptions);
         }
     }
 }

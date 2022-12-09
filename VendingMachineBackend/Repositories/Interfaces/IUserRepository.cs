@@ -2,7 +2,8 @@
 
 namespace VendingMachineBackend.Repositories
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface IUserRepository : IRepository<User>
     {
+        User? GetById(string userId);
     }
 }

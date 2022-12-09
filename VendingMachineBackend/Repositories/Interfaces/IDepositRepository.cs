@@ -1,6 +1,8 @@
-﻿namespace VendingMachineBackend.Repositories
+﻿using VendingMachineBackend.Models;
+
+namespace VendingMachineBackend.Repositories
 {
-    public interface IDepositRepository
+    public interface IDepositRepository: IRepository<Deposit>
     {
     }
 }

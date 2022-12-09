@@ -18,35 +18,35 @@ namespace VendingMachineBackend.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<(Result result, string token)> Login(LoginDto loginDto)
+        public async Task<Result<string>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
             if(user == null)
             {
-                return (new Result(false, "User doesn't exist"), string.Empty);
+                return new Result<string>(false, "User doesn't exist");
             }
 
             var isValidPassword = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             if(!isValidPassword)
             {
-                return (new Result(false, "Password doesn't match"), string.Empty);
+                return new Result<string>(false, "Password doesn't match");
             }
 
             var token = _jwtService.GenerateJwtToken();
 
             _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(user));
 
-            return (new Result(true, string.Empty), token);
+            return new Result<string>(true, string.Empty, token);
         }
 
-        public async Task<(Result result, string token)> SignUp(SingUpDto singUpDto)
+        public async Task<Result<string>> SignUp(SingUpDto singUpDto)
         {
             var user = await _userManager.FindByEmailAsync(singUpDto.Email);
 
             if (user != null)
             {
-                return (new Result(false, "User already exists"), string.Empty);
+                return new Result<string>(false, "User already exists");
             }
 
             var newUser = new User
@@ -59,14 +59,14 @@ namespace VendingMachineBackend.Services
             var result = await _userManager.CreateAsync(newUser, singUpDto.Password);
             if (!result.Succeeded)
             {
-                return (new Result(false, string.Join(',', result.Errors)), string.Empty);
+                return new Result<string>(false, string.Join(',', result.Errors, string.Empty));
             }
 
             var token = _jwtService.GenerateJwtToken();
 
             _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(user));
 
-            return (new Result(true, string.Empty), token);
+            return new Result<string>(true, string.Empty, token);
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using VendingMachineBackend.Models;
 
 namespace VendingMachineBackendIntegrationTests
 {
@@ -9,7 +12,18 @@ namespace VendingMachineBackendIntegrationTests
         [TestInitialize]
         public void Setup()
         {
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    // ... Configure test services
+                    builder.ConfigureServices(services =>
+                    {
+                        services.AddDbContext<VendingMachineContext>(options =>
+                        {
+                            options.UseInMemoryDatabase("InMemoryDbForTesting");
+                        });
+                    });
+                });
             _httpClient = application.CreateClient();
         }
 

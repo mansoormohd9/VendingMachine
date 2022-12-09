@@ -4,7 +4,7 @@ namespace VendingMachineBackend.Services
 {
     public interface IAccountService
     {
-        Task<(Result result, string token)> Login(LoginDto loginDto);
-        Task<(Result result, string token)> SignUp(SingUpDto singUpDto);
+        Task<Result<string>> Login(LoginDto loginDto);
+        Task<Result<string>> SignUp(SingUpDto singUpDto);
     }
 }
