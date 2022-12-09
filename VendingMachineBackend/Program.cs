@@ -75,6 +75,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 //services and repositories
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IJwtService, JwtService>();

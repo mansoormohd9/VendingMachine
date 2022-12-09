@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Models;
@@ -10,12 +11,14 @@ namespace VendingMachineBackend.Services
         private readonly UserManager<User> _userManager;
         private readonly IJwtService _jwtService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public AccountService(UserManager<User> userMgr, IJwtService jwtService, IHttpContextAccessor httpContextAccessor)
+        public AccountService(UserManager<User> userMgr, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _userManager = userMgr;
             _jwtService = jwtService;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public async Task<Result<string>> Login(LoginDto loginDto)
@@ -49,13 +52,7 @@ namespace VendingMachineBackend.Services
                 return new Result<string>(false, "User already exists");
             }
 
-            var newUser = new User
-            {
-                UserName = singUpDto.Email,
-                Email = singUpDto.Email,
-                FirstName  = singUpDto.FirstName,
-                LastName = singUpDto.LastName
-            };
+            var newUser = _mapper.Map<User>(singUpDto);
             var result = await _userManager.CreateAsync(newUser, singUpDto.Password);
             if (!result.Succeeded)
             {

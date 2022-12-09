@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VendingMachineBackend.Dtos;
+using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Models;
+using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
 {
@@ -15,95 +18,120 @@ namespace VendingMachineBackend.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly VendingMachineContext _context;
+        private readonly ILogger<ProductsController> _logger;
+        private readonly IProductService _productService;
 
-        public ProductsController(VendingMachineContext context)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
-            _context = context;
+            _productService = productService;
+            _logger = logger;
         }
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public ActionResult<IEnumerable<Product>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            try
+            {
+                return Ok(_productService.GetAll());
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
+            try
             {
-                return NotFound();
-            }
+                var productResult = await _productService.Get(id);
 
-            return product;
+                if (!productResult.Success)
+                {
+                    return BadRequest(productResult.Message);
+                }
+
+                return Ok(productResult.Value);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, ProductSaveDto product)
         {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(product).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var au = HttpContext.GetCurrentAppUser();
+                var productResult = await _productService.UpdateAsync(id, product, au);
 
-            return NoContent();
+                if (!productResult.Success)
+                {
+                    return BadRequest(productResult.Message);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<IActionResult> PostProduct(ProductSaveDto product)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var productResult = await _productService.AddAsync(product);
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+                if (!productResult.Success)
+                {
+                    return BadRequest(productResult.Message);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var au = HttpContext.GetCurrentAppUser();
+                var productResult = await _productService.DeleteAsync(id, au);
+
+                if (!productResult.Success)
+                {
+                    return BadRequest(productResult.Message);
+                }
+
+                return NoContent();
             }
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
     }
 }
