@@ -14,7 +14,7 @@ namespace VendingMachineBackendIntegrationTests
 {
     public static class AuthenticationHelper
     {
-        public static async Task SignIn(HttpClient httpClient, SingUpDto signUpDto)
+        public static async Task SignInAsync(HttpClient httpClient, SingUpDto signUpDto)
         {
             var loginDto = new LoginDto
             {

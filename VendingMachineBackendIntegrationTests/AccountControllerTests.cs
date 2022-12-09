@@ -28,8 +28,7 @@ namespace VendingMachineBackendIntegrationTests
 
             //act
             var response = await _httpClient.PostAsync("api/account/signup", new StringContent(JsonConvert.SerializeObject(signUpDto), Encoding.UTF8, MediaTypeNames.Application.Json));
-            var response1 = await response.Content.ReadAsStringAsync();
-
+            
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }

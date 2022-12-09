@@ -41,7 +41,7 @@ namespace VendingMachineBackend.Services
 
             var user = _mapper.Map<User>(userDto);
             await _userRepository.AddAsync(user);
-            return new Result<string>(true, string.Empty);
+            return new Result<string>(true, string.Empty, user.Id);
         }
 
         public async Task<Result<string>> UpdateAsync(string id, UserDto userDto)

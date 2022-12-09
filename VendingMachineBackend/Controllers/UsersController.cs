@@ -51,7 +51,7 @@ namespace VendingMachineBackend.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserDto userDto)
+        public async Task<ActionResult<string>> Post([FromBody] UserDto userDto)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace VendingMachineBackend.Controllers
                     return BadRequest(userResult.Message);
                 }
 
-                return NoContent();
+                return Ok(userResult.Value);
             }
             catch (Exception ex)
             {
