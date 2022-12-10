@@ -31,7 +31,7 @@ namespace VendingMachineBackend.Controllers
         // POST: api/Deposits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("deposit")]
-        public async Task<ActionResult<decimal>> PostDeposit(List<DepositDto> depositDtos)
+        public async Task<ActionResult<decimal>> PostDeposit([FromBody] List<DepositDto> depositDtos)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace VendingMachineBackend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in Products Controller {ex.Message}");
+                _logger.LogError($"Error in DepositsController {ex.Message}");
                 return StatusCode(500);
             }
         }
@@ -63,7 +63,7 @@ namespace VendingMachineBackend.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in Products Controller {ex.Message}");
+                _logger.LogError($"Error in DepositsController {ex.Message}");
                 return StatusCode(500);
             }
         }

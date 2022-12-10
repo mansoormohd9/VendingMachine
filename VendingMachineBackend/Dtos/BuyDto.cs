@@ -2,11 +2,11 @@
 
 namespace VendingMachineBackend.Dtos
 {
-    public class DepositDto
+    public class BuyDto
     {
         [Required]
-        public decimal Deposit { get; set; }
+        public int ProductId { get; set; }
         [Required]
-        public int Quantity { get; set; }
+        public int Amount { get; set; }
     }
 }

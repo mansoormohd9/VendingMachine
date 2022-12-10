@@ -67,7 +67,7 @@ namespace VendingMachineBackend.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductSaveDto product)
+        public async Task<IActionResult> PutProduct(int id, [FromBody] ProductSaveDto product)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace VendingMachineBackend.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> PostProduct(ProductSaveDto product)
+        public async Task<IActionResult> PostProduct([FromBody] ProductSaveDto product)
         {
             try
             {

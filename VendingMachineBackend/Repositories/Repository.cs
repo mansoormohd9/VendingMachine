@@ -67,5 +67,12 @@ namespace VendingMachineBackend.Repositories
             await _dbContext.SaveChangesAsync();
             return entity;
         }
+
+        public async Task<IEnumerable<TEntity>> UpdateRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbContext.Set<TEntity>().UpdateRange(entities);
+            await _dbContext.SaveChangesAsync();
+            return entities;
+        }
     }
 }

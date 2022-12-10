@@ -89,6 +89,7 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IDepositRepository, DepositRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserDepositRepository, UserDepositRepository>();
+builder.Services.AddTransient<IUserBuyRepository, UserBuyRepository>();
 
 builder.Services.AddAuthentication(opt => {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

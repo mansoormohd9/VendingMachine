@@ -9,6 +9,7 @@ namespace VendingMachineBackend.Models
         [Required]
         public int DepositId { get; set; }
         public virtual Deposit Deposit { get; set; }
+        public int Quantity { get; set; }
 
         [Required]
         public string UserId { get; set; }

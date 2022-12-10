@@ -80,5 +80,22 @@ namespace VendingMachineBackend.Profiles
                 return roles ?? new List<string>();
             }
         }
+
+        public class ProductPriceResolver : IValueResolver<BuyDto, UserBuy, decimal>
+        {
+            private readonly IProductRepository _productRepository;
+
+
+            public ProductPriceResolver(IProductRepository productRepository)
+            {
+                _productRepository = productRepository;
+            }
+
+            public decimal Resolve(BuyDto source, UserBuy target, decimal sellerId, ResolutionContext context)
+            {
+                var product = _productRepository.SingleOrDefault(x => x.Id == source.ProductId);
+                return product.Cost;
+            }
+        }
     }
 }

@@ -17,5 +17,11 @@ namespace VendingMachineBackend.Models
         public string SellerId { get; set; }
 
         public virtual User Seller { get; set; }
+        public virtual ICollection<UserBuy> UserBuys { get; set; }
+
+        public Product()
+        {
+            UserBuys = new HashSet<UserBuy>();
+        }
     }
 }
