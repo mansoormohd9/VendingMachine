@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Helpers;
-using VendingMachineBackend.Models;
 using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
@@ -26,15 +20,30 @@ namespace VendingMachineBackend.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public IActionResult GetDeposits()
+        {
+            var au = HttpContext.GetCurrentAppUser();
+            var deposits = _depositService.GetDeposits(au);
+            return Ok(deposits);
+        }
+
         // POST: api/Deposits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("deposit")]
-        public async Task<ActionResult<decimal>> PostDeposit(decimal deposit)
+        public async Task<ActionResult<decimal>> PostDeposit(List<DepositDto> depositDtos)
         {
             try
             {
                 var au = HttpContext.GetCurrentAppUser();
-                return Ok();
+                var depositResult = await _depositService.PostDeposit(depositDtos);
+
+                if (!depositResult.Success)
+                {
+                    return BadRequest(depositResult.Message);
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -49,7 +58,8 @@ namespace VendingMachineBackend.Controllers
             try
             {
                 var au = HttpContext.GetCurrentAppUser();
-                return Ok();
+                await _depositService.ResetDeposit(au);
+                return NoContent();
             }
             catch (Exception ex)
             {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Models;
+using VendingMachineBackend.Repositories;
 
 namespace VendingMachineBackend.Profiles
 {
@@ -22,6 +23,40 @@ namespace VendingMachineBackend.Profiles
             {
                 var appUser = _httpContextAccessor.HttpContext.GetCurrentAppUser();
                 return appUser.Id;
+            }
+        }
+
+        public class BuyerIdResolver : IValueResolver<DepositDto, UserDeposit, string>
+        {
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+
+            public BuyerIdResolver(IHttpContextAccessor httpContextAccessor)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
+
+            public string Resolve(DepositDto source, UserDeposit target, string sellerId, ResolutionContext context)
+            {
+                var appUser = _httpContextAccessor.HttpContext.GetCurrentAppUser();
+                return appUser.Id;
+            }
+        }
+
+        public class DepositIdResolver : IValueResolver<DepositDto, UserDeposit, int>
+        {
+            private readonly IDepositRepository _depositRepository;
+
+
+            public DepositIdResolver(IDepositRepository depositRepository)
+            {
+                _depositRepository = depositRepository;
+            }
+
+            public int Resolve(DepositDto source, UserDeposit target, int sellerId, ResolutionContext context)
+            {
+                var deposit = _depositRepository.SingleOrDefault(x => x.Amount == source.Deposit);
+                return deposit.Id;
             }
         }
 

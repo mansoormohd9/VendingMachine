@@ -1,26 +1,56 @@
-﻿using VendingMachineBackend.Repositories;
+﻿using AutoMapper;
+using VendingMachineBackend.Dtos;
+using VendingMachineBackend.Models;
+using VendingMachineBackend.Repositories;
 
 namespace VendingMachineBackend.Services
 {
-    public class DepositService: IDepositService
+    public class DepositService : IDepositService
     {
         private readonly IDepositRepository _depositRepository;
-        private readonly HashSet<decimal> _validDeposits = new HashSet<decimal> { 5, 10, 20, 50, 100 };
-        public DepositService(IDepositRepository depositRepository)
+        private readonly IUserDepositRepository _userDepositRepository;
+        private readonly IMapper _mapper;
+        public DepositService(IDepositRepository depositRepository, IUserDepositRepository userDepositRepository, IMapper mapper)
         {
             _depositRepository = depositRepository;
+            _userDepositRepository = userDepositRepository;
+            _mapper = mapper;
         }
 
-        //public Results<decimal> PostDeposit(User au, decimal deposit)
-        //{
-
-
-        //    //return 0M;
-        //}
-
-        private bool IsValidDeposit(decimal deposit)
+        public IEnumerable<DepositDto> GetDeposits(User au)
         {
-            return _validDeposits.Contains(deposit);
+            var deposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToList();
+
+            return deposits.Select(x => _mapper.Map<DepositDto>(x));
+        }
+
+        public async Task<Result<string>> PostDeposit(List<DepositDto> depositDtos)
+        {
+            var deposits = depositDtos.Select(x => x.Deposit);
+
+            if (HasInvalidDeposits(deposits))
+            {
+                return new Result<string>(false, "Invalid Deposits found");
+            }
+
+            var userDeposits = depositDtos.Select(x => _mapper.Map<UserDeposit>(x));
+            await _userDepositRepository.AddRangeAsync(userDeposits);
+
+            return new Result<string>(true, "Deposit Success");
+        }
+
+        public async Task ResetDeposit(User au)
+        {
+            var deposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToList();
+
+            await _userDepositRepository.RemoveRangeAsync(deposits);
+        }
+
+        private bool HasInvalidDeposits(IEnumerable<decimal> deposits)
+        {
+            var validDeposits = _depositRepository.GetAll().Select(x => x.Amount).ToHashSet();
+
+            return deposits.Where(x => !validDeposits.Contains(x)).Any();
         }
     }
 }

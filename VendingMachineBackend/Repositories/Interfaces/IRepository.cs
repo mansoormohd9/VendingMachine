@@ -15,6 +15,7 @@ namespace VendingMachineBackend.Repositories
         Task<TEntity> UpdateAsync(TEntity entity);
 
         Task RemoveAsync(TEntity entity);
+        Task RemoveRangeAsync(IEnumerable<TEntity> entities);
 
         Task SaveChangesAsync();
     }

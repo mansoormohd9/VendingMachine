@@ -45,6 +45,12 @@ namespace VendingMachineBackend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbContext.Set<TEntity>().RemoveRange(entities);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
