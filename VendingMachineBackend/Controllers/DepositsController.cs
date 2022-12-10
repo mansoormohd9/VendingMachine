@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Models;
+using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
 {
@@ -15,95 +17,45 @@ namespace VendingMachineBackend.Controllers
     [Authorize]
     public class DepositsController : ControllerBase
     {
-        private readonly VendingMachineContext _context;
+        private readonly ILogger<DepositsController> _logger;
+        private readonly IDepositService _depositService;
 
-        public DepositsController(VendingMachineContext context)
+        public DepositsController(IDepositService depositService, ILogger<DepositsController> logger)
         {
-            _context = context;
-        }
-
-        // GET: api/Deposits
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Deposit>>> GetDeposits()
-        {
-            return await _context.Deposits.ToListAsync();
-        }
-
-        // GET: api/Deposits/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Deposit>> GetDeposit(int id)
-        {
-            var deposit = await _context.Deposits.FindAsync(id);
-
-            if (deposit == null)
-            {
-                return NotFound();
-            }
-
-            return deposit;
-        }
-
-        // PUT: api/Deposits/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeposit(int id, Deposit deposit)
-        {
-            if (id != deposit.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(deposit).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DepositExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            _depositService = depositService;
+            _logger = logger;
         }
 
         // POST: api/Deposits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Deposit>> PostDeposit(Deposit deposit)
+        [HttpPost("deposit")]
+        public async Task<ActionResult<decimal>> PostDeposit(decimal deposit)
         {
-            _context.Deposits.Add(deposit);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetDeposit", new { id = deposit.Id }, deposit);
-        }
-
-        // DELETE: api/Deposits/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeposit(int id)
-        {
-            var deposit = await _context.Deposits.FindAsync(id);
-            if (deposit == null)
+            try
             {
-                return NotFound();
+                var au = HttpContext.GetCurrentAppUser();
+                return Ok();
             }
-
-            _context.Deposits.Remove(deposit);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
 
-        private bool DepositExists(int id)
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetDeposit()
         {
-            return _context.Deposits.Any(e => e.Id == id);
+            try
+            {
+                var au = HttpContext.GetCurrentAppUser();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
         }
     }
 }

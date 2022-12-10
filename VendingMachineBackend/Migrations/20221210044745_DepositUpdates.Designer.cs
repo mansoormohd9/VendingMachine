@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VendingMachineBackend.Models;
 
@@ -11,9 +12,10 @@ using VendingMachineBackend.Models;
 namespace VendingMachineBackend.Migrations
 {
     [DbContext(typeof(VendingMachineContext))]
-    partial class VendingMachineContextModelSnapshot : ModelSnapshot
+    [Migration("20221210044745_DepositUpdates")]
+    partial class DepositUpdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,12 +161,9 @@ namespace VendingMachineBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,6)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Amount")
-                        .IsUnique();
 
                     b.ToTable("Deposits");
                 });
@@ -181,7 +180,7 @@ namespace VendingMachineBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,6)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -192,16 +191,13 @@ namespace VendingMachineBackend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SellerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.HasIndex("SellerId");
 
@@ -283,15 +279,15 @@ namespace VendingMachineBackend.Migrations
                         {
                             Id = "75a9f6c2-b188-4d7f-b752-9c72fe5e44e7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "50203f54-0f97-4f20-b039-07082aabfb95",
+                            ConcurrencyStamp = "5e01bd2d-af91-4799-97c5-d0ebffde2016",
                             Email = "ADMIN@TEST.COM",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGeGjcDCu8FKNGhB/yfmzm/ixztecosUmDuHRkQZWH9nIUkxZPp8g6ZFgfKcpmBvEw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIUb+29SiLKqLgqQ8eBBc4kq7HAE4z+OY3R8XWdH5Mg5JIg4c3ZG1w3hf9Xz1/0+xg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8b71535e-015a-42a1-aec3-c7c7fabaed72",
+                            SecurityStamp = "a2cb9be6-90b2-42a8-a48d-5fbeeebe9c46",
                             TwoFactorEnabled = false,
                             UserName = "ADMIN@TEST.COM"
                         });
@@ -308,16 +304,17 @@ namespace VendingMachineBackend.Migrations
                     b.Property<int>("DepositId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DepositId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId1");
 
                     b.ToTable("UserDeposits");
                 });
@@ -369,10 +366,8 @@ namespace VendingMachineBackend.Migrations
                         .IsRequired();
 
                     b.HasOne("VendingMachineBackend.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("VendingMachineBackend.Models.UserDeposit", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Deposit");
 

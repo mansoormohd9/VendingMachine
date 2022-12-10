@@ -7,9 +7,9 @@ namespace VendingMachineBackend.Models.Configrations
     {
         public void Configure(EntityTypeBuilder<Deposit> builder)
         {
-            builder.HasOne(d => d.User)
-                .WithOne()
-                .HasForeignKey<Deposit>(s => s.UserId);
+            builder.HasIndex(i => i.Amount).IsUnique();
+
+            builder.Property(e => e.Amount).HasColumnType("decimal(18, 6)");
         }
     }
 }

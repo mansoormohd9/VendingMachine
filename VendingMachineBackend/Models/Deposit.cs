@@ -8,10 +8,6 @@ namespace VendingMachineBackend.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public decimal Balance { get; set; }
-        [Required]
-        public Guid UserId { get; set; }
-
-        public virtual User User { get; set; }
+        public decimal Amount { get; set; }
     }
 }
