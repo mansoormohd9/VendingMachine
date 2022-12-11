@@ -2,15 +2,21 @@
     <h2>Login</h2>
     <form [formGroup]="loginForm" class="justify-content-center" (ngSubmit)="onSubmit(loginForm)">
         <div class="form-group row my-2">
-            <label for="emailInput" class="col-sm-2 col-form-label">Email:</label>
+            <label  class="form-control-label is-invalid" for="emailInput" class="col-sm-2 col-form-label">Email:</label>
             <div class="col-sm-10">
-                <input formControlName="email" id="emailInput" placeholder="Your email" class="form-control">
+                <input formControlName="email" name="email" id="emailInput" placeholder="Your email" class="form-control">
+                <div class="text-danger" *ngIf="loginFormControls['email'].errors">
+                    Email is required
+                </div>
             </div>
         </div>
         <div class="form-group row my-2">
             <label for="passwordInput" class="col-sm-2 col-form-label">Password:</label>
             <div class="col-sm-10">
-                <input formControlName="password" id="passwordInput" placeholder="Your password" class="form-control">
+                <input class="form-control-label is-invalid" formControlName="password" id="passwordInput" placeholder="Your password" class="form-control">
+                <div class="text-danger" *ngIf="loginFormControls['password'].errors">
+                    Password is required
+                </div>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>

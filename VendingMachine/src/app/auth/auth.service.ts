@@ -8,7 +8,7 @@ import { LoginDto, SignupDto } from '../models/Auth';
   providedIn: 'root'
 })
 export class AuthService {
-  apiBase = "api/account/";
+  apiBase = "api/account";
   httpHeaders = { headers:new HttpHeaders({'Content-Type': 'application/json'}) };
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
