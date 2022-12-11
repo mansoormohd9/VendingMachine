@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VendingMachineBackend.Dtos;
 using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Services;
@@ -9,6 +10,7 @@ namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "ADMIN,BUYER")]
     public class BuyController : ControllerBase
     {
         private readonly ILogger<BuyController> _logger;

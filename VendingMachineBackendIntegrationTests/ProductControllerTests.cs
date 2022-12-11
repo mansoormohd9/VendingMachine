@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VendingMachineBackendIntegrationTests
 {
-    internal class ProductControllerTests : BaseTestSetup
+    public class ProductControllerTests : BaseTestSetup
     {
     }
 }

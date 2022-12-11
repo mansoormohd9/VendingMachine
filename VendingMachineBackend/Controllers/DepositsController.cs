@@ -8,7 +8,7 @@ namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "ADMIN,BUYER")]
     public class DepositsController : ControllerBase
     {
         private readonly ILogger<DepositsController> _logger;

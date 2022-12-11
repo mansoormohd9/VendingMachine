@@ -15,7 +15,7 @@ namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "ADMIN,SELLER")]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
