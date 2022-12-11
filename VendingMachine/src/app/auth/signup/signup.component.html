@@ -1,1 +1,39 @@
-<p>signup works!</p>
+<div class="col-6 mt-4">
+    <h2>Sign Up</h2>
+    <form [formGroup]="signupForm" class="justify-content-center" (ngSubmit)="onSubmit(signupForm)">
+        <div class="form-group row my-2">
+            <label for="firstNameInput" class="col-sm-2 col-form-label">FirstName:</label>
+            <div class="col-sm-10">
+                <input formControlName="firstName" id="firstNameInput" placeholder="Your First Name" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <label for="lastNameInput" class="col-sm-2 col-form-label">LastName:</label>
+            <div class="col-sm-10">
+                <input formControlName="lastName" id="lastNameInput" placeholder="Your Last Name" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <label for="emailInput" class="col-sm-2 col-form-label">Email:</label>
+            <div class="col-sm-10">
+                <input formControlName="email" id="emailInput" placeholder="Your email" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <label for="roleInput" class="col-sm-2 col-form-label">Role:</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="roleInput">
+                    <option>Buyer</option>
+                    <option>Seller</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <label for="passwordInput" class="col-sm-2 col-form-label">Password:</label>
+            <div class="col-sm-10">
+                <input formControlName="password" id="passwordInput" placeholder="Your password" class="form-control">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>

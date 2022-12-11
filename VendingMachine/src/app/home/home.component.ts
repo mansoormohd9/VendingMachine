@@ -10,17 +10,7 @@ export class HomeComponent {
   constructor(private jwtHelper: JwtHelperService) {
   }
 
-  isUserAuthenticated() {
-    const token = localStorage.getItem("jwt");
-    if (token && !this.jwtHelper.isTokenExpired(token)) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
+  
 
-  public logOut = () => {
-    localStorage.removeItem("jwt");
-  }
+  
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'VendingMachine';
+
+  constructor(private authService: AuthService){ }
+
+  isUserAuthenticated() {
+    return this.authService.isUserAuthenticated();
+  }
+
+  public logOut = () => {
+    this.authService.logOut().subscribe(() => {
+      localStorage.removeItem("jwt");
+    })
+  }
 }
