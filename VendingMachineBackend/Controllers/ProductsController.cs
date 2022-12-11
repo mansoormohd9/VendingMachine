@@ -29,11 +29,12 @@ namespace VendingMachineBackend.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetProducts()
+        public ActionResult<IEnumerable<ProductDto>> GetProducts()
         {
             try
             {
-                return Ok(_productService.GetAll());
+                var au = HttpContext.GetCurrentAppUser();
+                return Ok(_productService.GetAll(au));
             }
             catch(Exception ex)
             {
@@ -44,11 +45,12 @@ namespace VendingMachineBackend.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
             try
             {
-                var productResult = await _productService.Get(id);
+                var au = HttpContext.GetCurrentAppUser();
+                var productResult = await _productService.Get(id, au);
 
                 if (!productResult.Success)
                 {

@@ -12,6 +12,7 @@ namespace VendingMachineBackendIntegrationTests
     public class BaseTestSetup : IDisposable
     {
         public HttpClient _httpClient;
+        public IServiceProvider _serviceProvider;
 
         [TestInitialize]
         public async Task Setup()
@@ -25,7 +26,7 @@ namespace VendingMachineBackendIntegrationTests
                     await vendingMachineContext.Database.EnsureCreatedAsync();
                 }
             }
-
+            _serviceProvider = application.Services;
             _httpClient = application.CreateClient();
         }
 

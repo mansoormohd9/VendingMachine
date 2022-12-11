@@ -18,7 +18,7 @@ namespace VendingMachineBackendIntegrationTests
         [TestInitialize]
         public async Task TestInitialize()
         {
-            await AuthenticationHelper.SignInAsync(_httpClient, AuthenticationHelper.DummyUser());
+            await AuthenticationHelper.SignInAsync(_httpClient, AuthenticationHelper.GetAdminUser());
         }
 
         [TestMethod]

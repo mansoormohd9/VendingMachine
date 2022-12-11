@@ -45,17 +45,22 @@ namespace VendingMachineBackend.Services
             return new Result<string>(true, string.Empty);
         }
 
-        public IEnumerable<ProductDto> GetAll()
+        public IEnumerable<ProductDto> GetAll(User au)
         {
-            return _productRepository.GetAll().ToList().Select(x => _mapper.Map<ProductDto>(x));
+            return _productRepository.Find(x => x.SellerId == au.Id).ToList().Select(x => _mapper.Map<ProductDto>(x));
         }
 
-        public async Task<Result<ProductDto>> Get(int id)
+        public async Task<Result<ProductDto>> Get(int id, User au)
         {
             var product = await _productRepository.GetAsync(id);
             if (product == null)
             {
                 return new Result<ProductDto>(false, "Product doesn't exist");
+            }
+
+            if (product.SellerId != au.Id)
+            {
+                return new Result<ProductDto>(false, "Product doesn't not belong to current seller");
             }
 
             return new Result<ProductDto>(true, string.Empty, _mapper.Map<ProductDto>(product));

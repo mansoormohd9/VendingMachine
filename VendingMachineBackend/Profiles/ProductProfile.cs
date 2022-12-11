@@ -13,7 +13,8 @@ namespace VendingMachineBackend.Profiles
             CreateMap<ProductDto, Product>()
                     .ForMember(d => d.SellerId, o => o.MapFrom<SellerIdResolver>())
                     .ReverseMap();
-            CreateMap<ProductSaveDto, Product>();
+            CreateMap<ProductSaveDto, Product>()
+                    .ForMember(d => d.SellerId, o => o.MapFrom<SellerIdSaveResolver>());
         }
 
         

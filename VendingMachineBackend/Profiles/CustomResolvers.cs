@@ -26,6 +26,23 @@ namespace VendingMachineBackend.Profiles
             }
         }
 
+        public class SellerIdSaveResolver : IValueResolver<ProductSaveDto, Product, string>
+        {
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+
+            public SellerIdSaveResolver(IHttpContextAccessor httpContextAccessor)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
+
+            public string Resolve(ProductSaveDto source, Product target, string sellerId, ResolutionContext context)
+            {
+                var appUser = _httpContextAccessor.HttpContext.GetCurrentAppUser();
+                return appUser.Id;
+            }
+        }
+
         public class BuyerIdResolver : IValueResolver<DepositDto, UserDeposit, string>
         {
             private readonly IHttpContextAccessor _httpContextAccessor;
