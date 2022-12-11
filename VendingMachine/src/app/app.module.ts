@@ -18,6 +18,7 @@ import { ViewComponent } from './buyer/view/view.component';
 import { DepositComponent } from './buyer/deposit/deposit.component';
 import { SellerHomeComponent } from './seller/seller-home/seller-home.component';
 import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
+import { AuthGuardService } from './guards/auth-guard.service';
 
 export function tokenGetter() {
   return localStorage.getItem("access_token");
@@ -53,7 +54,7 @@ export function tokenGetter() {
     }),
     ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

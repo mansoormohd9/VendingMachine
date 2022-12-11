@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth.service';
@@ -16,11 +16,11 @@ export class SignupComponent {
 
   ngOnInit(): void {
     this.signupForm = new FormGroup({
-      firstName: new FormControl(''),
-      lastName: new FormControl(''),
-      email: new FormControl(''),
-      password: new FormControl(''),
-      role: new FormControl('Buyer')
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.email, Validators.required]),
+      password: new FormControl('', Validators.required),
+      role: new FormControl('Buyer', Validators.required)
     })
   }
 
@@ -39,4 +39,6 @@ export class SignupComponent {
       this.toastr.error(err);
     })
   }
+
+  get signUpFormControls() { return this.signupForm.controls }
 }
