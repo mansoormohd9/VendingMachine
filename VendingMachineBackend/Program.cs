@@ -85,6 +85,7 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IDepositService, DepositService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IBuyService, BuyService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IDepositRepository, DepositRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
