@@ -78,5 +78,33 @@ namespace VendingMachineBackendTests
             //assert
             Assert.AreEqual(false, result.Success);
         }
+
+        [TestMethod]
+        public async Task TestUDeleteFailure()
+        {
+            //setup
+            Product product = null;
+            _mockProductRepository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
+
+            //act
+            var result = await _productService.DeleteAsync(1, new User());
+
+            //assert
+            Assert.AreEqual(false, result.Success);
+        }
+
+        [TestMethod]
+        public async Task TestDeleteFailureSellerIdMismatch()
+        {
+            //setup
+            Product product = new Product { SellerId = "1" };
+            _mockProductRepository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
+
+            //act
+            var result = await _productService.DeleteAsync(1, new User { Id = "2" });
+
+            //assert
+            Assert.AreEqual(false, result.Success);
+        }
     }
 }
