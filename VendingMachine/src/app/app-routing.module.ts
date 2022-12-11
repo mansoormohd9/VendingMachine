@@ -6,6 +6,7 @@ import { BuyComponent } from './buyer/buy/buy.component';
 import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
 import { DepositComponent } from './buyer/deposit/deposit.component';
 import { ViewComponent } from './buyer/view/view.component';
+import { AuthGuardService } from './guards/auth-guard.service';
 import { HomeComponent } from './home/home.component';
 import { AddProductsComponent } from './seller/add-products/add-products.component';
 import { SellerHomeComponent } from './seller/seller-home/seller-home.component';
@@ -13,16 +14,16 @@ import { ViewProductsComponent } from './seller/view-products/view-products.comp
 
 const routes: Routes = [
   {path: "", pathMatch:  "full",redirectTo:  "/home"},
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService]  },
   { path: 'login', component: LoginComponent },
   { path: 'signUp', component: SignupComponent },
-  { path: 'buyer/home', component: BuyerHomeComponent },
-  { path: 'buyer/buy', component: BuyComponent },
-  { path: 'buyer/deposit', component: DepositComponent },
-  { path: 'buyer/view', component: ViewComponent },
-  { path: 'seller/view', component: ViewProductsComponent },
-  { path: 'seller/add', component: AddProductsComponent },
-  { path: 'seller/home', component: SellerHomeComponent },
+  { path: 'buyer/home', component: BuyerHomeComponent, canActivate: [AuthGuardService] },
+  { path: 'buyer/buy', component: BuyComponent, canActivate: [AuthGuardService]  },
+  { path: 'buyer/deposit', component: DepositComponent, canActivate: [AuthGuardService]  },
+  { path: 'buyer/view', component: ViewComponent, canActivate: [AuthGuardService]  },
+  { path: 'seller/view', component: ViewProductsComponent, canActivate: [AuthGuardService]  },
+  { path: 'seller/add', component: AddProductsComponent, canActivate: [AuthGuardService]  },
+  { path: 'seller/home', component: SellerHomeComponent , canActivate: [AuthGuardService] },
 ];
 
 @NgModule({
