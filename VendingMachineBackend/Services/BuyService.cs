@@ -70,7 +70,7 @@ namespace VendingMachineBackend.Services
 
             var totalAmount = product.Cost * buyDto.Amount;
 
-            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToDictionary(x => x.DepositId, v => v.Quantity);
+            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToDictionary(x => x.Deposit.Amount, v => v.Quantity);
             var depoistAmountMap = _depositRepository.Find(x => userDeposits.ContainsKey(x.Id)).ToDictionary(x => x.Id, x => x.Amount);
 
             var amountsAvailable = userDeposits.Keys.OrderByDescending(x => x).ToHashSet();

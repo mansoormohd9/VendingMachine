@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-home',
@@ -6,5 +7,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  constructor(private jwtHelper: JwtHelperService) {
+  }
 
+  isUserAuthenticated() {
+    const token = localStorage.getItem("jwt");
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public logOut = () => {
+    localStorage.removeItem("jwt");
+  }
 }
