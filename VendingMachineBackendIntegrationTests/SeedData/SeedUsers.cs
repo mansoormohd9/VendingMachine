@@ -17,7 +17,7 @@ namespace VendingMachineBackendIntegrationTests.SeedData
                     await vendingMachineContext.Users.AddRangeAsync(GetUsers());
                     await vendingMachineContext.SaveChangesAsync();
                     var buyerRole = vendingMachineContext.IdentityRoles.First(x => x.Name == "BUYER").Id;
-                    var buyerUserRole = new IdentityUserRole<string> { RoleId = buyerRole, UserId = Constants.SellerRoleUserId};
+                    var buyerUserRole = new IdentityUserRole<string> { RoleId = buyerRole, UserId = Constants.BuyerRoleUserId};
                     await vendingMachineContext.IdentityUserRoles.AddAsync(buyerUserRole);
 
                     var sellerRole = vendingMachineContext.IdentityRoles.First(x => x.Name == "SELLER").Id;

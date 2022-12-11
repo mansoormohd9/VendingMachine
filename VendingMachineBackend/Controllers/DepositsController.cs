@@ -21,7 +21,7 @@ namespace VendingMachineBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDeposits()
+        public ActionResult<IEnumerable<DepositDto>> GetDeposits()
         {
             var au = HttpContext.GetCurrentAppUser();
             var deposits = _depositService.GetDeposits(au);
@@ -30,8 +30,8 @@ namespace VendingMachineBackend.Controllers
 
         // POST: api/Deposits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("deposit")]
-        public async Task<ActionResult<decimal>> PostDeposit([FromBody] List<DepositDto> depositDtos)
+        [HttpPost]
+        public async Task<IActionResult> PostDeposit([FromBody] List<DepositDto> depositDtos)
         {
             try
             {

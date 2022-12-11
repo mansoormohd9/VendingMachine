@@ -12,6 +12,7 @@ namespace VendingMachineBackend.Profiles
             CreateMap<DepositDto, UserDeposit>()
                 .ForMember(d => d.UserId, o => o.MapFrom<BuyerIdResolver>())
                 .ForMember(d => d.DepositId, o => o.MapFrom<DepositIdResolver>())
+                .ForMember(d => d.Deposit, o => o.Ignore())
                 .ReverseMap();
         }
     }
