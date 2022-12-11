@@ -16,6 +16,8 @@ import { AddProductsComponent } from './seller/add-products/add-products.compone
 import { BuyComponent } from './buyer/buy/buy.component';
 import { ViewComponent } from './buyer/view/view.component';
 import { DepositComponent } from './buyer/deposit/deposit.component';
+import { SellerHomeComponent } from './seller/seller-home/seller-home.component';
+import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
 
 export function tokenGetter() {
   return localStorage.getItem("access_token");
@@ -31,7 +33,9 @@ export function tokenGetter() {
     AddProductsComponent,
     BuyComponent,
     ViewComponent,
-    DepositComponent
+    DepositComponent,
+    SellerHomeComponent,
+    BuyerHomeComponent
   ],
   imports: [
     BrowserModule, 
