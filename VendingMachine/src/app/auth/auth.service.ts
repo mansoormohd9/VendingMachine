@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
+import { HelperService } from '../helpers/helper.service';
 import { LoginDto, SignupDto } from '../models/Auth';
 
 @Injectable({
@@ -9,23 +10,19 @@ import { LoginDto, SignupDto } from '../models/Auth';
 })
 export class AuthService {
   apiBase = "api/account";
-  httpHeaders = { headers:new HttpHeaders({'Content-Type': 'application/json'}) };
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
+  httpHeaders = { headers:new HttpHeaders({'Content-Type': 'application/json'}), responseType: 'text' as any };
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private helperService: HelperService) { }
 
   login(credentials: LoginDto): Observable<any> {
     return this.http.post(this.apiBase+ "/login", credentials, this.httpHeaders);
   }
 
-  signUp(signUpDto: SignupDto): Observable<any> {
-    return this.http.post(this.apiBase+ "/signup", signUpDto, this.httpHeaders);
+  signUp(signUpDto: SignupDto): Observable<string> {
+    return this.http.post<string>(this.apiBase+ "/signup", signUpDto, this.httpHeaders);
   }
 
   logOut(): Observable<any> {
     return this.http.get(this.apiBase + "/logOut");
-  }
-
-  getUserRole(): Observable<any> {
-    return this.http.get(this.apiBase + "/getUserRole");
   }
 
   isUserAuthenticated() {

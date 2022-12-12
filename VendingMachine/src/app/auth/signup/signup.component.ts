@@ -32,8 +32,7 @@ export class SignupComponent {
 
     this.authService.signUp(form.value)
     .subscribe((response) => {
-      const token = response.token;
-      localStorage.setItem("jwt", token);
+      localStorage.setItem("jwt", response);
       this.router.navigate(["/home"]);
     }, err => {
       this.toastr.error(err);

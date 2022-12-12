@@ -29,13 +29,15 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.login(form.value)
-    .subscribe((response) => {
-      const token = response.token;
-      localStorage.setItem("jwt", token);
-      this.router.navigate(["/home"]);
-    }, err => {
-      this.toastr.error(err);
-    })
+    .subscribe({
+      next: data => {
+        localStorage.setItem("jwt", data);
+        this.router.navigate(["/home"]);
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
+    });
   }
 
   get loginFormControls() { return this.loginForm.controls }
