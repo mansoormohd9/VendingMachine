@@ -5,8 +5,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav mr-auto">
-        <li *ngIf="isUserAuthenticated()" class="nav-item">
-          <a class="nav-link" routerLink="/">VendingMachines</a>
+        <li *ngIf="!isUserAuthenticated()" class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+        <li *ngIf="!isUserAuthenticated()" class="nav-item">
+          <a class="nav-link" routerLink="/signUp">Sign Up</a>
         </li>
         <li *ngIf="isUserAuthenticated()" class="nav-item">
           <a class="nav-link" (click)="logOut()">Logout</a>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent {
   title = 'VendingMachine';
 
-  constructor(private authService: AuthService){ }
+  constructor(private authService: AuthService, private router: Router){ }
 
   isUserAuthenticated() {
     return this.authService.isUserAuthenticated();
@@ -18,6 +19,7 @@ export class AppComponent {
   public logOut = () => {
     this.authService.logOut().subscribe(() => {
       localStorage.removeItem("jwt");
+      this.router.navigate(["login"]);
     })
   }
 }

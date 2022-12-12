@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,9 +19,10 @@ import { DepositComponent } from './buyer/deposit/deposit.component';
 import { SellerHomeComponent } from './seller/seller-home/seller-home.component';
 import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
 import { AuthGuardService } from './guards/auth-guard.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export function tokenGetter() {
-  return localStorage.getItem("access_token");
+  return localStorage.getItem("jwt");
 }
 
 @NgModule({
@@ -54,7 +55,7 @@ export function tokenGetter() {
     }),
     ToastrModule.forRoot(),
   ],
-  providers: [AuthGuardService],
+  providers: [AuthGuardService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
