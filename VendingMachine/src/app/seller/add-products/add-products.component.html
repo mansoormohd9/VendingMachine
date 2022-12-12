@@ -4,7 +4,7 @@
         <div class="form-group row my-2">
             <label  class="form-control-label is-invalid" for="nameInput" class="col-sm-2 col-form-label">Name:</label>
             <div class="col-sm-10">
-                <input formControlName="name" name="name" id="nameInput" placeholder="Your name" class="form-control">
+                <input formControlName="name" type="text" id="nameInput" placeholder="Your name" class="form-control">
                 <div class="text-danger" *ngIf="productFormControls['name'].errors">
                     Name is required
                 </div>
@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Add Product</button>
+        <button type="submit" class="btn btn-primary">Add/Update Product</button>
     </form>
 </div>
 

@@ -24,7 +24,7 @@ const routes: Routes = [
   { path: 'buyer/deposit', component: DepositComponent, canActivate: [AuthGuardService]  },
   { path: 'buyer/view', component: ViewComponent, canActivate: [AuthGuardService]  },
   { path: 'seller/view', component: ViewProductsComponent, canActivate: [AuthGuardService]  },
-  { path: 'seller/add', component: AddProductsComponent, canActivate: [AuthGuardService]  },
+  { path: 'seller/add/:productId', component: AddProductsComponent, canActivate: [AuthGuardService]  },
   { path: 'seller/home', component: SellerHomeComponent , canActivate: [AuthGuardService] },
 ];
 

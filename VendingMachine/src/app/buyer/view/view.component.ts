@@ -29,7 +29,8 @@ deposits!: Array<DepositDto>;
     })
   }
 
-  resetDeposit() {
+  resetDeposit(e: Event) {
+    e.preventDefault();
     this.buyerService.resetDeposit()
     .subscribe({
       next: data => {

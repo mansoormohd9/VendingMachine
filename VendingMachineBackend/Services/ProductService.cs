@@ -84,7 +84,7 @@ namespace VendingMachineBackend.Services
                 return new Result<string>(false, "Logged in user doesn't have enough previlege to perform action");
             }
 
-            var productExists = _productRepository.Find(x => x.Name == productDto.Name).Any();
+            var productExists = _productRepository.Find(x => x.Name == productDto.Name && x.Id != id).Any();
             if (productExists)
             {
                 return new Result<string>(false, "Product already exist");

@@ -7,7 +7,7 @@ import { ProductDto, ProductSaveDto } from './models/Seller';
   providedIn: 'root'
 })
 export class SellerService {
-  apiBase = "api/products";
+  apiBase = "api/products/";
   httpHeaders = { headers:new HttpHeaders({'Content-Type': 'application/json'}) };
   constructor(private http: HttpClient) { }
 
@@ -19,12 +19,16 @@ export class SellerService {
     return this.http.get<Array<ProductDto>>(this.apiBase);
   }
 
-  viewAllProducts(): Observable<Array<ProductDto>> {
-    return this.http.get<Array<ProductDto>>(this.apiBase + "/getAll");
+  getProduct(productId: number): Observable<ProductDto> {
+    return this.http.get<ProductDto>(this.apiBase + productId);
   }
 
-  updateProduct(product: ProductDto): Observable<any> {
-    return this.http.put(this.apiBase + product.id, product, this.httpHeaders);
+  viewAllProducts(): Observable<Array<ProductDto>> {
+    return this.http.get<Array<ProductDto>>(this.apiBase + "all");
+  }
+
+  updateProduct(product: ProductSaveDto, id: number): Observable<any> {
+    return this.http.put(this.apiBase + id, product, this.httpHeaders);
   }
 
   deleteProduct(id: number): Observable<any> {

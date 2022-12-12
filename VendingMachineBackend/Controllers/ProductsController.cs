@@ -27,7 +27,7 @@ namespace VendingMachineBackend.Controllers
             _logger = logger;
         }
 
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [Authorize(Roles = "ADMIN,BUYER")]
         public ActionResult<IEnumerable<ProductDto>> GetAllProducts()
         {
