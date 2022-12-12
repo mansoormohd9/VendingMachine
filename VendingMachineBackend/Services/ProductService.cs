@@ -73,7 +73,7 @@ namespace VendingMachineBackend.Services
 
         public async Task<Result<string>> UpdateAsync(int id, ProductSaveDto productDto, User au)
         {
-            var product = await _productRepository.GetAsync(id);
+            var product = await _productRepository.GetProductUnTrackedAsync(id);
             if (product == null)
             {
                 return new Result<string>(false, "Product doesn't exist");
@@ -91,6 +91,7 @@ namespace VendingMachineBackend.Services
             }
 
             var productMapped = _mapper.Map<Product>(productDto);
+            productMapped.Id = id;
             await _productRepository.UpdateAsync(productMapped);
             return new Result<string>(true, string.Empty);
         }
