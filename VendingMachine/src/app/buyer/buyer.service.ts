@@ -14,4 +14,8 @@ export class BuyerService {
   deposit(deposit: Array<DepositDto>): Observable<any> {
     return this.http.post(this.apiBase, deposit, this.httpHeaders);
   }
+
+  getDeposits(): Observable<Array<DepositDto>> {
+    return this.http.get<Array<DepositDto>>(this.apiBase, this.httpHeaders);
+  }
 }

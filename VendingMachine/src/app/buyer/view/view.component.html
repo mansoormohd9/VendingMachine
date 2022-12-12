@@ -1,1 +1,16 @@
-<p>view works!</p>
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Deposit</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let deposit of deposits">
+                <td>{{ deposit.deposit }}</td>
+                <td>{{ deposit.quantity }}</td>
+            </tr>
+        </tbody>
+      </table>
+</div>

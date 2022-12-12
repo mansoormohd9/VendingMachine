@@ -77,6 +77,23 @@ namespace VendingMachineBackend.Profiles
             }
         }
 
+        public class DepositAmountResolver : IValueResolver<UserDeposit, DepositDto, decimal>
+        {
+            private readonly IDepositRepository _depositRepository;
+
+
+            public DepositAmountResolver(IDepositRepository depositRepository)
+            {
+                _depositRepository = depositRepository;
+            }
+
+            public decimal Resolve(UserDeposit source, DepositDto target, decimal amount, ResolutionContext context)
+            {
+                var deposit = _depositRepository.SingleOrDefault(x => x.Id == source.DepositId);
+                return deposit.Amount;
+            }
+        }
+
         public class UserRolesResolver : IValueResolver<User, UserDto, IList<string>>
         {
             private readonly UserManager<User> _userManager;

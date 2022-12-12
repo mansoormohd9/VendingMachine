@@ -27,7 +27,8 @@ export class DepositComponent implements OnInit{
       this.toastr.error("Found errors in form");
       return;
     }
-    const deposits = Array<DepositDto>().fill(form.value);
+    let deposits = Array<DepositDto>();
+    deposits.push(form.value);
     this.buyerService.deposit(deposits)
     .subscribe({
       next: data => {
