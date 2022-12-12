@@ -30,6 +30,11 @@ namespace VendingMachineBackend.Services
             return new Result<UserDto>(true, string.Empty, _mapper.Map<UserDto>(user));
         }
 
+        public async Task<IEnumerable<string>> GetRoles(User au)
+        {
+            return await _userManager.GetRolesAsync(au);
+        }
+
         public IEnumerable<UserDto> GetAll()
         {
             var test = _userRepository.GetAll().ToList();

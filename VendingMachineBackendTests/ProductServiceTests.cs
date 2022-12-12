@@ -56,7 +56,7 @@ namespace VendingMachineBackendTests
         {
             //setup
             Product product = null;
-            _mockProductRepository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
+            _mockProductRepository.Setup(x => x.GetProductUnTrackedAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
 
             //act
             var result = await _productService.UpdateAsync(1, new ProductSaveDto(), new User());
@@ -69,8 +69,8 @@ namespace VendingMachineBackendTests
         public async Task TestUpdateFailureSellerIdMismatch()
         {
             //setup
-            Product product = new Product { SellerId = "1" };
-            _mockProductRepository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
+            Product? product = new Product { SellerId = "1" };
+            _mockProductRepository.Setup(x => x.GetProductUnTrackedAsync(It.IsAny<int>())).Returns(Task.FromResult(product));
 
             //act
             var result = await _productService.UpdateAsync(1, new ProductSaveDto { }, new User { Id = "2" });

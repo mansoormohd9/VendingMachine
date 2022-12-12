@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VendingMachineBackend.Dtos;
+using VendingMachineBackend.Helpers;
 using VendingMachineBackend.Services;
 
 namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = "ADMIN,BUYER,SELLER")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -21,13 +22,23 @@ namespace VendingMachineBackend.Controllers
 
         // GET: api/<UserController>
         [HttpGet]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Get()
         {
             return Ok(_userService.GetAll());
         }
 
+        [HttpGet("user-roles")]
+        [Authorize(Roles = "BUYER,SELLER")]
+        public async Task<ActionResult<IEnumerable<string>>> GetUserRoles()
+        {
+            var au = HttpContext.GetCurrentAppUser();
+            return Ok(await _userService.GetRoles(au));
+        }
+
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<UserDto> Get(string id)
         {
             try
@@ -50,6 +61,7 @@ namespace VendingMachineBackend.Controllers
 
         // POST api/<UserController>
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<string>> Post([FromBody] UserDto userDto)
         {
             try
@@ -72,6 +84,7 @@ namespace VendingMachineBackend.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Put(string id, [FromBody] UserDto userDto)
         {
             try
@@ -94,6 +107,7 @@ namespace VendingMachineBackend.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Delete(string id)
         {
             try

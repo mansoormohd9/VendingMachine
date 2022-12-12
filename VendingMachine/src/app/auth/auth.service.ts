@@ -10,6 +10,7 @@ import { LoginDto, SignupDto } from '../models/Auth';
 })
 export class AuthService {
   apiBase = "api/account";
+  usersApiBase = "api/users";
   httpHeaders = { headers:new HttpHeaders({'Content-Type': 'application/json'}), responseType: 'text' as any };
   constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private helperService: HelperService) { }
 
@@ -23,6 +24,10 @@ export class AuthService {
 
   logOut(): Observable<any> {
     return this.http.get(this.apiBase + "/logOut");
+  }
+
+  getUserRoles(): Observable<any> {
+    return this.http.get(this.usersApiBase + "/user-roles");
   }
 
   isUserAuthenticated() {

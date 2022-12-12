@@ -2,10 +2,10 @@
     <div class="container display-flex justify-content-center">
       <h1 class="jumbotron-heading">Vending Machine Application</h1>
       <p>
-        <a href="/seller/home" class="btn btn-primary my-2">Seller Section</a>
+        <a href="/seller/home" class="btn btn-primary my-2" *ngIf="roles.includes('SELLER')">Seller Section</a>
       </p>
       <p>        
-        <a href="/buyer/home" class="btn btn-secondary my-2">Buyer Section</a>
+        <a href="/buyer/home" class="btn btn-secondary my-2" *ngIf="roles.includes('BUYER')">Buyer Section</a>
       </p>
     </div>
 </section>
