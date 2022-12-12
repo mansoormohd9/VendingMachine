@@ -20,6 +20,7 @@ import { SellerHomeComponent } from './seller/seller-home/seller-home.component'
 import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 export function tokenGetter() {
   return localStorage.getItem("jwt");
@@ -37,7 +38,8 @@ export function tokenGetter() {
     ViewComponent,
     DepositComponent,
     SellerHomeComponent,
-    BuyerHomeComponent
+    BuyerHomeComponent,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule, 
