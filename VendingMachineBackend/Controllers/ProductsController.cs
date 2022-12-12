@@ -15,7 +15,7 @@ namespace VendingMachineBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ADMIN,SELLER")]
+    [Authorize(Roles = "ADMIN,SELLER,BUYER")]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
@@ -27,8 +27,24 @@ namespace VendingMachineBackend.Controllers
             _logger = logger;
         }
 
+        [HttpGet("getAll")]
+        [Authorize(Roles = "ADMIN,BUYER")]
+        public ActionResult<IEnumerable<ProductDto>> GetAllProducts()
+        {
+            try
+            {
+                return Ok(_productService.GetAll());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Products Controller {ex.Message}");
+                return StatusCode(500);
+            }
+        }
+
         // GET: api/Products
         [HttpGet]
+        [Authorize(Roles = "ADMIN,SELLER")]
         public ActionResult<IEnumerable<ProductDto>> GetProducts()
         {
             try
@@ -45,6 +61,7 @@ namespace VendingMachineBackend.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "ADMIN,SELLER")]
         public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
             try
@@ -69,6 +86,7 @@ namespace VendingMachineBackend.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "ADMIN,SELLER")]
         public async Task<IActionResult> PutProduct(int id, [FromBody] ProductSaveDto product)
         {
             try
@@ -93,6 +111,7 @@ namespace VendingMachineBackend.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "ADMIN,SELLER")]
         public async Task<IActionResult> PostProduct([FromBody] ProductSaveDto product)
         {
             try
@@ -115,6 +134,7 @@ namespace VendingMachineBackend.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN,SELLER")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try

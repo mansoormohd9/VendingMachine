@@ -45,6 +45,11 @@ namespace VendingMachineBackend.Services
             return new Result<string>(true, string.Empty);
         }
 
+        public IEnumerable<ProductDto> GetAll()
+        {
+            return _productRepository.GetAll().ToList().Select(x => _mapper.Map<ProductDto>(x));
+        }
+
         public IEnumerable<ProductDto> GetAll(User au)
         {
             return _productRepository.Find(x => x.SellerId == au.Id).ToList().Select(x => _mapper.Map<ProductDto>(x));

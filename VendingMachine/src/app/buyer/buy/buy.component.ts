@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDto } from 'src/app/seller/models/Seller';
+import { SellerService } from 'src/app/seller/seller.service';
 import { BuyerService } from '../buyer.service';
 import { DepositDto } from '../models/Buyer';
 
@@ -12,13 +14,27 @@ import { DepositDto } from '../models/Buyer';
 })
 export class BuyComponent {
   buyForm!: FormGroup;
+  products!: Array<ProductDto>;
 
-  constructor(private toastr: ToastrService, private buyerService: BuyerService, private router: Router){}
+  constructor(private toastr: ToastrService, private buyerService: BuyerService, private router: Router, private sellerService: SellerService){}
 
   ngOnInit(): void {
+    this.fetchProducts()
     this.buyForm = new FormGroup({
-      deposit: new FormControl('', [Validators.required]),
-      quantity: new FormControl('', Validators.required)
+      productId: new FormControl('', [Validators.required]),
+      amount: new FormControl('', Validators.required)
+    })
+  }
+
+  fetchProducts() {
+    this.sellerService.viewAllProducts()
+    .subscribe({
+      next: data => {
+        this.products = data;
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
     })
   }
 
@@ -27,12 +43,10 @@ export class BuyComponent {
       this.toastr.error("Found errors in form");
       return;
     }
-    let deposits = Array<DepositDto>();
-    deposits.push(form.value);
-    this.buyerService.deposit(deposits)
+    this.buyerService.buy(form.value)
     .subscribe({
       next: data => {
-        this.toastr.success("Deposit success");
+        this.toastr.success("Buy success");
         this.router.navigate(["/buyer/home"]);
       },
       error: error => {

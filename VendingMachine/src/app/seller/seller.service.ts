@@ -19,6 +19,10 @@ export class SellerService {
     return this.http.get<Array<ProductDto>>(this.apiBase);
   }
 
+  viewAllProducts(): Observable<Array<ProductDto>> {
+    return this.http.get<Array<ProductDto>>(this.apiBase + "/getAll");
+  }
+
   updateProduct(product: ProductDto): Observable<any> {
     return this.http.put(this.apiBase + product.id, product, this.httpHeaders);
   }

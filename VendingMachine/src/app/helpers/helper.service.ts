@@ -23,6 +23,7 @@ export class HelperService {
       // The response body may contain clues as to what went wrong.
       console.error(
         `Backend returned code ${error.status}, body was: `, error.error);
+      this.toastr.error(error.error);
     }
   }
 }

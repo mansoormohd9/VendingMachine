@@ -13,10 +13,10 @@ export class ViewProductsComponent {
   constructor(private sellerService: SellerService, private toastr: ToastrService){ }
 
   ngOnInit(): void {
-    this.fetchDeposits();
+    this.fetchProducts();
   }
 
-  fetchDeposits() {
+  fetchProducts() {
     this.sellerService.viewProducts()
     .subscribe({
       next: data => {

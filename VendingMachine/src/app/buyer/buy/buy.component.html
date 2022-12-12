@@ -4,7 +4,9 @@
         <div class="form-group row my-2">
             <label  class="form-control-label is-invalid" for="productIdInput" class="col-sm-2 col-form-label">Product:</label>
             <div class="col-sm-10">
-                <input formControlName="productId" name="productId" type="number" id="productIdInput" placeholder="Your productId" class="form-control">
+                <select class="form-control" id="productId" formControlName="productId" *ngFor="let product of products">
+                    <option [value]="product.id">{{product.name}}</option>
+                </select>
                 <div class="text-danger" *ngIf="buyFormControls['productId'].errors">
                     Product is required
                 </div>
