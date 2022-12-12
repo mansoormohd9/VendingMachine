@@ -63,7 +63,7 @@ namespace VendingMachineBackend.Services
             var roles = (await _userManager.GetRolesAsync(newUser)) ?? new List<string>();
             var token = _jwtService.GenerateJwtToken(roles);
 
-            _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(user));
+            _httpContextAccessor.HttpContext.Session.SetString("AppUser", JsonConvert.SerializeObject(newUser));
 
             return new Result<string>(true, string.Empty, token);
         }

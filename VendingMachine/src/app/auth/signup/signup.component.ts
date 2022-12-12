@@ -20,7 +20,7 @@ export class SignupComponent {
       lastName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.email, Validators.required]),
       password: new FormControl('', Validators.required),
-      role: new FormControl('Buyer', Validators.required)
+      role: new FormControl('', Validators.required)
     })
   }
 

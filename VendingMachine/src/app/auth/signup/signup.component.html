@@ -31,9 +31,9 @@
         <div class="form-group row my-2">
             <label for="roleInput" class="col-sm-2 col-form-label">Role:</label>
             <div class="col-sm-10">
-                <select class="form-control" id="roleInput">
-                    <option>Buyer</option>
-                    <option>Seller</option>
+                <select class="form-control" id="roleInput" formControlName="role">
+                    <option value="Buyer">Buyer</option>
+                    <option value="Seller">Seller</option>
                 </select>
                 <div class="text-danger" *ngIf="signUpFormControls['role'].errors">
                     Role is required
