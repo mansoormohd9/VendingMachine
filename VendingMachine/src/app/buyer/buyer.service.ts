@@ -23,4 +23,8 @@ export class BuyerService {
   getDeposits(): Observable<Array<DepositDto>> {
     return this.http.get<Array<DepositDto>>(this.apiBase, this.httpHeaders);
   }
+
+  resetDeposit(): Observable<any> {
+    return this.http.post(this.apiBase + "/reset", null, this.httpHeaders);
+  }
 }

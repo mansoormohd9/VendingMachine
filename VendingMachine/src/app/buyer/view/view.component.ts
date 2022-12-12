@@ -28,4 +28,17 @@ deposits!: Array<DepositDto>;
       }
     })
   }
+
+  resetDeposit() {
+    this.buyerService.resetDeposit()
+    .subscribe({
+      next: data => {
+        this.toastr.success("Reset success")
+        this.deposits = [];
+      },
+      error: error => {
+        console.error('There was an error!', error);
+      }
+    })
+  }
 }
