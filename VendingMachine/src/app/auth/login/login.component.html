@@ -13,7 +13,7 @@
         <div class="form-group row my-2">
             <label for="passwordInput" class="col-sm-2 col-form-label">Password:</label>
             <div class="col-sm-10">
-                <input class="form-control-label is-invalid" formControlName="password" id="passwordInput" placeholder="Your password" class="form-control">
+                <input class="form-control-label is-invalid" formControlName="password" type="password" id="passwordInput" placeholder="Your password" class="form-control">
                 <div class="text-danger" *ngIf="loginFormControls['password'].errors">
                     Password is required
                 </div>
