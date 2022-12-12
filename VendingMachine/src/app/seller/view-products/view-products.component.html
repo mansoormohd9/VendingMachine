@@ -1,1 +1,20 @@
-<p>view-products works!</p>
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Amount Available</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products">
+                <td>{{ product.name }}</td>
+                <td>{{ product.amountAvailable }}</td>
+                <td>{{ product.cost }}</td>
+                <td><a href="#" (click)="deleteProduct($event, product.id)">Delete</a></td>
+            </tr>
+        </tbody>
+      </table>
+</div>
