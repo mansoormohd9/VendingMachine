@@ -46,8 +46,9 @@ namespace VendingMachineBackendIntegrationTests.SeedData
                 var provider = scope.ServiceProvider;
                 using (var vendingMachineContext = provider.GetRequiredService<VendingMachineContext>())
                 {
-                    vendingMachineContext.IdentityUserRoles.RemoveRange(vendingMachineContext.IdentityUserRoles);
-                    vendingMachineContext.Users.RemoveRange(vendingMachineContext.Users);
+                    var adminUser = vendingMachineContext.Users.Where(x => x.UserName == Constants.TestAdminUsername).FirstOrDefault();
+                    vendingMachineContext.IdentityUserRoles.RemoveRange(vendingMachineContext.IdentityUserRoles.Where(x => x.UserId != adminUser.Id));
+                    vendingMachineContext.Users.RemoveRange(vendingMachineContext.Users.Where(x => x.UserName != Constants.TestAdminUsername));
                     await vendingMachineContext.SaveChangesAsync();
                 }
             }
