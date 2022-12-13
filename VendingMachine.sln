@@ -7,9 +7,9 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "VendingMachine", "VendingMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VendingMachineBackend", "VendingMachineBackend\VendingMachineBackend.csproj", "{2A238E3B-76F2-404B-BA6D-202E72DDF256}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VendingMachineBackendTests", "VendingMachineBackendTests\VendingMachineBackendTests.csproj", "{22D1EB9B-D834-47E9-A461-E9F6612390AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VendingMachineBackend.Tests", "VendingMachineBackendTests\VendingMachineBackend.Tests.csproj", "{22D1EB9B-D834-47E9-A461-E9F6612390AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendingMachineBackendIntegrationTests", "VendingMachineBackendIntegrationTests\VendingMachineBackendIntegrationTests.csproj", "{1D8AB913-5254-42E3-B954-9E0BFEC3A821}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VendingMachineBackend.IntegrationTests", "VendingMachineBackendIntegrationTests\VendingMachineBackend.IntegrationTests.csproj", "{1D8AB913-5254-42E3-B954-9E0BFEC3A821}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

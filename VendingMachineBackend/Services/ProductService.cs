@@ -23,6 +23,11 @@ namespace VendingMachineBackend.Services
                 return new Result<string>(false, "Product already exist");
             }
 
+            if(!IsValidProductAmount(productDto.Cost))
+            {
+                return new Result<string>(false, "Invalid Product Cost");
+            }
+
             var productMapped = _mapper.Map<Product>(productDto);
             await _productRepository.AddAsync(productMapped);
             return new Result<string>(true, string.Empty);
@@ -31,14 +36,10 @@ namespace VendingMachineBackend.Services
         public async Task<Result<string>> DeleteAsync(int id, User au)
         {
             var product = await _productRepository.GetAsync(id);
-            if (product == null)
+            var commonValidationResult = CommonValidations(product, au);
+            if(!commonValidationResult.Success)
             {
-                return new Result<string>(false, "Product doesn't exist");
-            }
-
-            if (product.SellerId != au.Id)
-            {
-                return new Result<string>(false, "Logged in user doesn't have enough previlege to perform action");
+                return commonValidationResult;
             }
 
             await _productRepository.RemoveAsync(product);
@@ -58,14 +59,10 @@ namespace VendingMachineBackend.Services
         public async Task<Result<ProductDto>> Get(int id, User au)
         {
             var product = await _productRepository.GetAsync(id);
-            if (product == null)
+            var commonValidationResult = CommonValidations(product, au);
+            if (!commonValidationResult.Success)
             {
-                return new Result<ProductDto>(false, "Product doesn't exist");
-            }
-
-            if (product.SellerId != au.Id)
-            {
-                return new Result<ProductDto>(false, "Product doesn't not belong to current seller");
+                return new Result<ProductDto>(commonValidationResult.Success, commonValidationResult.Message);
             }
 
             return new Result<ProductDto>(true, string.Empty, _mapper.Map<ProductDto>(product));
@@ -74,14 +71,15 @@ namespace VendingMachineBackend.Services
         public async Task<Result<string>> UpdateAsync(int id, ProductSaveDto productDto, User au)
         {
             var product = await _productRepository.GetProductUnTrackedAsync(id);
-            if (product == null)
+            var commonValidationResult = CommonValidations(product, au);
+            if (!commonValidationResult.Success)
             {
-                return new Result<string>(false, "Product doesn't exist");
+                return commonValidationResult;
             }
 
-            if (product.SellerId != au.Id)
+            if (!IsValidProductAmount(productDto.Cost))
             {
-                return new Result<string>(false, "Logged in user doesn't have enough previlege to perform action");
+                return new Result<string>(false, "Invalid Product Cost");
             }
 
             var productExists = _productRepository.Find(x => x.Name == productDto.Name && x.Id != id).Any();
@@ -94,6 +92,26 @@ namespace VendingMachineBackend.Services
             productMapped.Id = id;
             await _productRepository.UpdateAsync(productMapped);
             return new Result<string>(true, string.Empty);
+        }
+
+        private Result<string> CommonValidations(Product? product, User au)
+        {
+            if (product == null)
+            {
+                return new Result<string>(false, "Product doesn't exist");
+            }
+
+            if (product.SellerId != au.Id)
+            {
+                return new Result<string>(false, "Logged in user doesn't have enough previlege to perform action");
+            }
+
+            return new Result<string>(true, string.Empty);
+        }
+
+        private bool IsValidProductAmount(decimal Amount)
+        {
+            return (Amount % 5) == 0;
         }
     }
 }
