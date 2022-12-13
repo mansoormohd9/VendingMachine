@@ -34,7 +34,16 @@ namespace VendingMachineBackend.Services
             }
 
             var userDeposits = depositDtos.Select(x => _mapper.Map<UserDeposit>(x));
-            await _userDepositRepository.AddRangeAsync(userDeposits);
+            var userDepositAmountMap = userDeposits.ToDictionary(x => x.DepositId, x => x.Quantity);
+            var existingUserDeposits = _userDepositRepository.Find(x => userDepositAmountMap.Keys.Contains(x.DepositId));
+            foreach(var existingUserDeposit in existingUserDeposits)
+            {
+                existingUserDeposit.Quantity += userDepositAmountMap[existingUserDeposit.DepositId];
+            }
+            var existingUserDepositIds = existingUserDeposits.Select(x => x.DepositId).ToHashSet();
+            var newUserDeposits = userDeposits.Where(x => !existingUserDepositIds.Contains(x.DepositId)).ToList();
+            await _userDepositRepository.AddRangeAsync(newUserDeposits);
+            await _userDepositRepository.UpdateRangeAsync(existingUserDeposits);
 
             return new Result<string>(true, "Deposit Success");
         }

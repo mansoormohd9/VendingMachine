@@ -131,5 +131,21 @@ namespace VendingMachineBackend.Profiles
                 return product.Cost;
             }
         }
+
+        public class UserBuyUserResolver : IValueResolver<BuyDto, UserBuy, string>
+        {
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+            public UserBuyUserResolver(IHttpContextAccessor httpContextAccessor)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
+
+            public string Resolve(BuyDto source, UserBuy target, string sellerId, ResolutionContext context)
+            {
+                var appUser = _httpContextAccessor.HttpContext.GetCurrentAppUser();
+                return appUser.Id;
+            }
+        }
     }
 }

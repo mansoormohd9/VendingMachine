@@ -29,7 +29,7 @@ namespace VendingMachineBackend.Controllers
         }
 
         [HttpGet("user-roles")]
-        [Authorize(Roles = "BUYER,SELLER")]
+        [Authorize(Roles = "ADMIN,BUYER,SELLER")]
         public async Task<ActionResult<IEnumerable<string>>> GetUserRoles()
         {
             var au = HttpContext.GetCurrentAppUser();

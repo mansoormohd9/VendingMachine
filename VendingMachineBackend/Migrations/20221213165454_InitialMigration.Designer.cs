@@ -12,8 +12,8 @@ using VendingMachineBackend.Models;
 namespace VendingMachineBackend.Migrations
 {
     [DbContext(typeof(VendingMachineContext))]
-    [Migration("20221210044745_DepositUpdates")]
-    partial class DepositUpdates
+    [Migration("20221213165454_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,11 +161,41 @@ namespace VendingMachineBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,6)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Amount")
+                        .IsUnique();
+
                     b.ToTable("Deposits");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 5m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 10m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Amount = 20m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Amount = 50m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Amount = 100m
+                        });
                 });
 
             modelBuilder.Entity("VendingMachineBackend.Models.Product", b =>
@@ -180,10 +210,9 @@ namespace VendingMachineBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -191,13 +220,16 @@ namespace VendingMachineBackend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SellerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("SellerId");
 
@@ -279,18 +311,51 @@ namespace VendingMachineBackend.Migrations
                         {
                             Id = "75a9f6c2-b188-4d7f-b752-9c72fe5e44e7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5e01bd2d-af91-4799-97c5-d0ebffde2016",
+                            ConcurrencyStamp = "a137ce21-c7ce-41e5-9886-638bfbfa21ad",
                             Email = "ADMIN@TEST.COM",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIUb+29SiLKqLgqQ8eBBc4kq7HAE4z+OY3R8XWdH5Mg5JIg4c3ZG1w3hf9Xz1/0+xg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA6l/RXOdz9746BBk5NZWAUUr02hkkVrqwg7KPV+o+nnZg1h8Bf5Sw2O3YmE+lmjcA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a2cb9be6-90b2-42a8-a48d-5fbeeebe9c46",
+                            SecurityStamp = "30d68edd-9dbc-4928-956a-9cae26deec2e",
                             TwoFactorEnabled = false,
                             UserName = "ADMIN@TEST.COM"
                         });
+                });
+
+            modelBuilder.Entity("VendingMachineBackend.Models.UserBuy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BuyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PriceBoughtAt")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserBuy");
                 });
 
             modelBuilder.Entity("VendingMachineBackend.Models.UserDeposit", b =>
@@ -304,17 +369,19 @@ namespace VendingMachineBackend.Migrations
                     b.Property<int>("DepositId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DepositId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId", "DepositId")
+                        .IsUnique();
 
                     b.ToTable("UserDeposits");
                 });
@@ -357,6 +424,25 @@ namespace VendingMachineBackend.Migrations
                     b.Navigation("Seller");
                 });
 
+            modelBuilder.Entity("VendingMachineBackend.Models.UserBuy", b =>
+                {
+                    b.HasOne("VendingMachineBackend.Models.Product", "Product")
+                        .WithMany("UserBuys")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("VendingMachineBackend.Models.User", "User")
+                        .WithMany("UserBuys")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("VendingMachineBackend.Models.UserDeposit", b =>
                 {
                     b.HasOne("VendingMachineBackend.Models.Deposit", "Deposit")
@@ -367,16 +453,25 @@ namespace VendingMachineBackend.Migrations
 
                     b.HasOne("VendingMachineBackend.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Deposit");
 
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("VendingMachineBackend.Models.Product", b =>
+                {
+                    b.Navigation("UserBuys");
+                });
+
             modelBuilder.Entity("VendingMachineBackend.Models.User", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("UserBuys");
                 });
 #pragma warning restore 612, 618
         }

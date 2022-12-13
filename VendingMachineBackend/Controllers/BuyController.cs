@@ -21,6 +21,22 @@ namespace VendingMachineBackend.Controllers
             _logger = logger;
         }
 
+        [HttpGet("userOrders")]
+        public ActionResult<IEnumerable<UserBuyDto>> GetUserOrders()
+        {
+            try
+            {
+                var au = HttpContext.GetCurrentAppUser();
+                var userOrders = _buyService.GetUserOrders(au);
+                return Ok(userOrders);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in BuyController {ex.Message}");
+                return StatusCode(500);
+            }
+        }
+
         [HttpPost("canBuy")]
         public ActionResult<string> CanBuy([FromBody] BuyDto buyDto)
         {

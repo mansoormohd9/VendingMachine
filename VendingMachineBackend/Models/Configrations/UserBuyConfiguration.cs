@@ -11,7 +11,13 @@ namespace VendingMachineBackend.Models.Configrations
 
             builder.HasOne(d => d.Product)
                 .WithMany(s => s.UserBuys)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction); ;
+
+            builder.HasOne(d => d.User)
+                .WithMany(s => s.UserBuys)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

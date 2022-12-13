@@ -31,10 +31,12 @@ export class LoginComponent implements OnInit {
     this.authService.login(form.value)
     .subscribe({
       next: data => {
+        this.toastr.success("Login Sucess");
         localStorage.setItem("jwt", data);
         this.router.navigate(["/home"]);
       },
       error: error => {
+        this.toastr.error("Invalid Login Details");
         console.error('There was an error!', error);
       }
     });

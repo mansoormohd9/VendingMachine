@@ -23,6 +23,18 @@ namespace VendingMachineBackend.Services
             _userBuyRepository = userBuyRepository;
         }
 
+        public IEnumerable<UserBuyDto> GetUserOrders(User au)
+        {
+            var userOrders = _userBuyRepository.Find(x => x.UserId == au.Id).Select(x => new UserBuyDto
+            {
+                Product = x.Product.Name,
+                Amount = x.Amount,
+                BuyDate = x.BuyDate,
+                PriceBoughtAt = x.PriceBoughtAt
+            });
+            return userOrders;
+        }
+
         public async Task<Result<List<DepositDto>>> PlaceBuyOrderAsync(BuyDto buyDto, User au)
         {
             var canBuyResult = CanBuy(buyDto, au);
@@ -33,7 +45,7 @@ namespace VendingMachineBackend.Services
             }
 
             var toBeUpdatedDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToList();
-            var depoistAmountMap = _depositRepository.Find(x => canBuyResult.Value.ContainsKey(x.Amount)).ToDictionary(x => x.Id, x => x.Amount);
+            var depoistAmountMap = _depositRepository.Find(x => canBuyResult.Value.Keys.Contains(x.Amount)).ToDictionary(x => x.Id, x => x.Amount);
             foreach (var deposit in toBeUpdatedDeposits)
             {
                 if (depoistAmountMap.ContainsKey(deposit.DepositId) && canBuyResult.Value.ContainsKey(depoistAmountMap[deposit.DepositId]))
@@ -48,6 +60,11 @@ namespace VendingMachineBackend.Services
             //add userBuy record
             var userBuy = _mapper.Map<UserBuy>(buyDto);
             await _userBuyRepository.AddAsync(userBuy);
+
+            //update product quantity
+            var product = _productRepository.SingleOrDefault(x => x.Id == buyDto.ProductId);
+            product.AmountAvailable -= buyDto.Amount;
+            await _productRepository.UpdateAsync(product);
 
             var userReturn = toBeUpdatedDeposits.Select(x => _mapper.Map<DepositDto>(x)).ToList();
 
@@ -70,8 +87,8 @@ namespace VendingMachineBackend.Services
 
             var totalAmount = product.Cost * buyDto.Amount;
 
-            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToDictionary(x => x.DepositId, v => v.Quantity);
-            var depoistAmountMap = _depositRepository.Find(x => userDeposits.ContainsKey(x.Id)).ToDictionary(x => x.Id, x => x.Amount);
+            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToList().ToDictionary(x => x.DepositId, v => v.Quantity);
+            var depoistAmountMap = _depositRepository.Find(x => userDeposits.Keys.Contains(x.Id)).ToDictionary(x => x.Id, x => x.Amount);
 
             var coinsAvailable = depoistAmountMap.Values.Select(x => (int)x).ToArray();
             var limits = depoistAmountMap.Select(x => userDeposits[x.Key]).ToArray();

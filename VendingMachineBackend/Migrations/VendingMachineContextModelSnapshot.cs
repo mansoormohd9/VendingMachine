@@ -309,15 +309,15 @@ namespace VendingMachineBackend.Migrations
                         {
                             Id = "75a9f6c2-b188-4d7f-b752-9c72fe5e44e7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "404daff3-2a7a-4c4e-97e4-28f4bf41664e",
+                            ConcurrencyStamp = "a137ce21-c7ce-41e5-9886-638bfbfa21ad",
                             Email = "ADMIN@TEST.COM",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAED1Wr9RcpG4QQ+RRvxw3gXID9KMxtntVzno6XTN6KPmvIsYIcDEWDYHn56SJ525y/Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA6l/RXOdz9746BBk5NZWAUUr02hkkVrqwg7KPV+o+nnZg1h8Bf5Sw2O3YmE+lmjcA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2117f37f-f539-4f60-a825-c2f37b9e617f",
+                            SecurityStamp = "30d68edd-9dbc-4928-956a-9cae26deec2e",
                             TwoFactorEnabled = false,
                             UserName = "ADMIN@TEST.COM"
                         });
@@ -334,8 +334,8 @@ namespace VendingMachineBackend.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.Property<int>("BuyDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("BuyDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("PriceBoughtAt")
                         .HasColumnType("decimal(18,6)");
@@ -343,9 +343,15 @@ namespace VendingMachineBackend.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserBuy");
                 });
@@ -372,7 +378,7 @@ namespace VendingMachineBackend.Migrations
 
                     b.HasIndex("DepositId");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("UserId", "DepositId")
                         .IsUnique();
 
                     b.ToTable("UserDeposits");
@@ -421,10 +427,18 @@ namespace VendingMachineBackend.Migrations
                     b.HasOne("VendingMachineBackend.Models.Product", "Product")
                         .WithMany("UserBuys")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("VendingMachineBackend.Models.User", "User")
+                        .WithMany("UserBuys")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VendingMachineBackend.Models.UserDeposit", b =>
@@ -436,8 +450,8 @@ namespace VendingMachineBackend.Migrations
                         .IsRequired();
 
                     b.HasOne("VendingMachineBackend.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("VendingMachineBackend.Models.UserDeposit", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -454,6 +468,8 @@ namespace VendingMachineBackend.Migrations
             modelBuilder.Entity("VendingMachineBackend.Models.User", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("UserBuys");
                 });
 #pragma warning restore 612, 618
         }

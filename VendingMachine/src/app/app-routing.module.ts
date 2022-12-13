@@ -5,6 +5,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { BuyComponent } from './buyer/buy/buy.component';
 import { BuyerHomeComponent } from './buyer/buyer-home/buyer-home.component';
 import { DepositComponent } from './buyer/deposit/deposit.component';
+import { ViewOrdersComponent } from './buyer/view-orders/view-orders.component';
 import { ViewComponent } from './buyer/view/view.component';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { HomeComponent } from './home/home.component';
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'buyer/buy', component: BuyComponent, canActivate: [AuthGuardService]  },
   { path: 'buyer/deposit', component: DepositComponent, canActivate: [AuthGuardService]  },
   { path: 'buyer/view', component: ViewComponent, canActivate: [AuthGuardService]  },
+  { path: 'buyer/orders', component: ViewOrdersComponent, canActivate: [AuthGuardService]  },
   { path: 'seller/view', component: ViewProductsComponent, canActivate: [AuthGuardService]  },
   { path: 'seller/add/:productId', component: AddProductsComponent, canActivate: [AuthGuardService]  },
   { path: 'seller/home', component: SellerHomeComponent , canActivate: [AuthGuardService] },

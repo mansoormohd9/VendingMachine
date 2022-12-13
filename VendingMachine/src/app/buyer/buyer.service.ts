@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BuyDto, DepositDto } from './models/Buyer';
+import { BuyDto, DepositDto, UserBuyDto } from './models/Buyer';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +26,9 @@ export class BuyerService {
 
   resetDeposit(): Observable<any> {
     return this.http.post(this.apiBase + "/reset", null, this.httpHeaders);
+  }
+
+  getUserOrders(): Observable<Array<UserBuyDto>> {
+    return this.http.get<Array<UserBuyDto>>(this.buyApiBase + "/userOrders", this.httpHeaders);
   }
 }

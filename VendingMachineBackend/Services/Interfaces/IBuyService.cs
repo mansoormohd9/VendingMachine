@@ -7,5 +7,6 @@ namespace VendingMachineBackend.Services
     {
         Result<Dictionary<decimal, int>> CanBuy(BuyDto buyDto, User au);
         Task<Result<List<DepositDto>>> PlaceBuyOrderAsync(BuyDto buyDto, User au);
+        IEnumerable<UserBuyDto> GetUserOrders(User au);
     }
 }

@@ -7,3 +7,10 @@ export interface BuyDto {
     productId: number,
     amount: number
 }
+
+export interface UserBuyDto {
+    product: string,
+    amount: number,
+    priceBoughtAt: number,
+    buyDate: Date
+}

@@ -1,0 +1,20 @@
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">PriceBoughtAt</th>
+            <th scope="col">Amount</th>
+            <th scope="col">BuyDate</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let userOrder of userOrders">
+                <td>{{ userOrder.product }}</td>
+                <td>{{ userOrder.priceBoughtAt }}</td>
+                <td>{{ userOrder.amount }}</td>
+                <td>{{ userOrder.buyDate }}</td>
+            </tr>
+        </tbody>
+      </table>
+</div>
