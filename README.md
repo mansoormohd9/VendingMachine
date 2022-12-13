@@ -31,8 +31,13 @@ Both frontend and backend needs to be run seperated or we can use visual studio 
 3. Navigate to https://localhost:4200/
 
 ## Runnig test
+
 ## Backend
-1. cd VendingMachineBackend/
+## Unit Tests
+1. cd VendingMachineBackendTests/
+2. dotnet test
+## Integration Tests
+1. cd VendingMachineBackendIntegrationTests/
 2. dotnet test
 ## Frontend
 1. cd  VendingMachine/
