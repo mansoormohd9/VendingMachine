@@ -33,6 +33,44 @@ namespace VendingMachineBackendIntegrationTests
         }
 
         [TestMethod]
+        public async Task TestBuySuccess()
+        {
+            //setup
+            var expected = HttpStatusCode.OK;
+            var buyDto = new BuyDto
+            {
+                ProductId = 1,
+                Amount = 1
+            };
+
+            //act
+            var result = await _httpClient.PostAsync(apiBase, new StringContent(JsonConvert.SerializeObject(buyDto), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var response = JsonConvert.DeserializeObject<IEnumerable<DepositDto>>(await result.Content.ReadAsStringAsync());
+
+            //assert
+            Assert.AreEqual(expected, result.StatusCode);
+            Assert.IsNotNull(response);
+        }
+
+        [TestMethod]
+        public async Task TestBuyFailure()
+        {
+            //setup
+            var expected = HttpStatusCode.BadRequest;
+            var buyDto = new BuyDto
+            {
+                ProductId = 1,
+                Amount = 3
+            };
+
+            //act
+            var result = await _httpClient.PostAsync(apiBase, new StringContent(JsonConvert.SerializeObject(buyDto), Encoding.UTF8, MediaTypeNames.Application.Json));
+            
+            //assert
+            Assert.AreEqual(expected, result.StatusCode);
+        }
+
+        [TestMethod]
         public async Task TestCanBuy()
         {
             //setup
