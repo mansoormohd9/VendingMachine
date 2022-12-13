@@ -57,12 +57,11 @@ namespace VendingMachineBackendTests
         public void TestCanBuyQuantityAvailableFailure()
         {
             //setup
-            Product product = new Product { AmountAvailable = 2, Cost = 55M };
+            Product product = new Product { AmountAvailable = 2, Cost = 115M };
             var userDeposits = new List<UserDeposit>
             {
-                new UserDeposit{ Deposit = new Deposit{ Amount = 100 }, Quantity = 1 },
-                new UserDeposit{ Deposit = new Deposit{ Amount = 5 }, Quantity = 1 },
-                new UserDeposit{ Deposit = new Deposit{ Amount = 10 }, Quantity = 2 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 100 }, Quantity = 1, DepositId = 1 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 5 }, Quantity = 1, DepositId = 2 }
             };
             _mockProductRepository.Setup(x => x.SingleOrDefault(It.IsAny<Expression<Func<Product, bool>>>())).Returns(product);
             _mockUserDepositRepository.Setup(x => x.Find(It.IsAny<Expression<Func<UserDeposit, bool>>>())).Returns(userDeposits.AsQueryable());
@@ -81,18 +80,27 @@ namespace VendingMachineBackendTests
             Product product = new Product { AmountAvailable = 2, Cost = 25M };
             var userDeposits = new List<UserDeposit>
             {
-                new UserDeposit{ Deposit = new Deposit{ Amount = 100 }, Quantity = 1 },
-                new UserDeposit{ Deposit = new Deposit{ Amount = 5 }, Quantity = 1 },
-                new UserDeposit{ Deposit = new Deposit{ Amount = 10 }, Quantity = 2 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 100 }, Quantity = 1, DepositId = 1 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 5 }, Quantity = 2, DepositId = 2 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 10 }, Quantity = 10, DepositId = 3 },
+                new UserDeposit{ Deposit = new Deposit{ Amount = 20 }, Quantity = 6, DepositId = 4 },
+            };
+            var deposits = new List<Deposit>
+            {
+                new Deposit { Amount = 100, Id = 1 },
+                new Deposit { Amount = 5, Id = 2 },
+                new Deposit { Amount = 10, Id = 3 },
+                new Deposit { Amount = 20, Id = 4 },
             };
             _mockProductRepository.Setup(x => x.SingleOrDefault(It.IsAny<Expression<Func<Product, bool>>>())).Returns(product);
             _mockUserDepositRepository.Setup(x => x.Find(It.IsAny<Expression<Func<UserDeposit, bool>>>())).Returns(userDeposits.AsQueryable());
+            _mockDepositRepository.Setup(x => x.Find(It.IsAny<Expression<Func<Deposit, bool>>>())).Returns(deposits.AsQueryable());
 
             //assert
             var result = _buyService.CanBuy(new BuyDto { Amount = 1 }, new User());
 
             //act
-            Assert.AreEqual(false, result.Success);
+            Assert.AreEqual(true, result.Success);
         }
 
         [TestMethod]

@@ -70,41 +70,20 @@ namespace VendingMachineBackend.Services
 
             var totalAmount = product.Cost * buyDto.Amount;
 
-            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToDictionary(x => x.Deposit.Amount, v => v.Quantity);
+            var userDeposits = _userDepositRepository.Find(x => x.UserId == au.Id).ToDictionary(x => x.DepositId, v => v.Quantity);
             var depoistAmountMap = _depositRepository.Find(x => userDeposits.ContainsKey(x.Id)).ToDictionary(x => x.Id, x => x.Amount);
 
-            var coinsAvailable = depoistAmountMap.Values.ToArray();
-            var limits = coinsAvailable.Select(x => userDeposits[x]).ToArray();
+            var coinsAvailable = depoistAmountMap.Values.Select(x => (int)x).ToArray();
+            var limits = depoistAmountMap.Select(x => userDeposits[x.Key]).ToArray();
 
-            var coinChanges = CoinChangeWithMemoization(coinsAvailable, limits, totalAmount);
+            var coinChange = CoinChangeWithMemoization(coinsAvailable, limits, (int)totalAmount);
 
-            var amountsAvailable = userDeposits.Keys.OrderByDescending(x => x).ToHashSet();
-
-            //TODO fix below logic to handle all cases
-            var totalPriceNeeded = totalAmount;
-            foreach (var amount in amountsAvailable)
-            {
-                var requiredQuantity = (int)(totalPriceNeeded / amount);
-
-                var availableQuantity = Math.Min(requiredQuantity, userDeposits[amount]);
-
-                totalPriceNeeded = totalPriceNeeded - amount * availableQuantity;
-
-                //updating quantities
-                userDeposits[amount] = userDeposits[amount] - availableQuantity;
-
-                if (totalPriceNeeded <= 0)
-                {
-                    break;
-                }
-            }
-
-            if (totalPriceNeeded > 0)
+            if(coinChange.minCount == -1)
             {
                 return new Result<Dictionary<decimal, int>>(false, "Please retry with new deposits");
             }
-
-            return new Result<Dictionary<decimal, int>>(true, string.Empty, userDeposits);
+            var updatedQuantiyMap = coinsAvailable.Select((x, i) => new { Amount = x, Quantity = limits[i] }).ToDictionary(x => (decimal)x.Amount, x => x.Quantity);
+            return new Result<Dictionary<decimal, int>>(true, string.Empty, updatedQuantiyMap);
         }
 
         public (int minCount, int[] arr) CoinChangeWithMemoization(int[] coins, int[] limits, int amount)
@@ -126,7 +105,7 @@ namespace VendingMachineBackend.Services
                 return (-1, result.arr);
             }
 
-            return (-1, result.arr);
+            return (result.minCount, result.arr);
         }
 
 

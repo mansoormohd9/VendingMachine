@@ -27,9 +27,9 @@ namespace VendingMachineBackendIntegrationTests
         [TestCleanup]
         public async Task TestCleanup()
         {
-            await SeedData.SeedUsers.Cleanup(_serviceProvider);
             await SeedData.SeedProducts.Cleanup(_serviceProvider);
             await SeedData.SeedDeposits.Cleanup(_serviceProvider);
+            await SeedData.SeedUsers.Cleanup(_serviceProvider);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace VendingMachineBackendIntegrationTests
             
             //act
             var result = await _httpClient.PostAsync(apiBase + "canBuy", new StringContent(JsonConvert.SerializeObject(buyDto), Encoding.UTF8, MediaTypeNames.Application.Json));
-            var response = JsonConvert.DeserializeObject<IEnumerable<DepositDto>>(await result.Content.ReadAsStringAsync());
+            var response = await result.Content.ReadAsStringAsync();
 
             //assert
             Assert.AreEqual(expected, result.StatusCode);

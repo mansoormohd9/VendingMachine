@@ -22,7 +22,7 @@ namespace VendingMachineBackend.Controllers
         }
 
         [HttpPost("canBuy")]
-        public IActionResult CanBuy([FromBody] BuyDto buyDto)
+        public ActionResult<string> CanBuy([FromBody] BuyDto buyDto)
         {
             try
             {
